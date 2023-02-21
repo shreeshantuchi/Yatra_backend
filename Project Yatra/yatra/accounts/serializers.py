@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User,Yatri
+from accounts.models import User,Yatri,Country,Interest,Location,Language,SahayatriExpert,SahayatriGuide
 from django.db import models
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -14,7 +14,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     password2=serializers.CharField(style={'input_type=password'},write_only=True) 
     class Meta:
         model= User
-        fields=['email','name','tc','password','password2' ]
+        fields=['email','password','password2' ]
         extra_kwargs={
             'password':{'write_only':True}
         }
@@ -93,7 +93,60 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
 
 
 
+
+
+#this is the serrializer for the yatri
 class YatriSerializer(serializers.ModelSerializer):
     class Meta:
         model = Yatri
+        exclude = ['created_at','updated_at']
+
+
+#this is the serrializer for the Interest
+class SahayatriExpertSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SahayatriExpert
+        exclude = ['created_at','updated_at']
+
+
+#this is the serrializer for the Interest
+class SahayatriGuideSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SahayatriGuide
+        exclude = ['created_at','updated_at']
+
+
+
+
+
+
+#this is the serrializer for the Language
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
         fields = '__all__'
+
+
+
+
+#this is the serrializer for the location
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = '__all__'
+
+
+#this is the serrializer for the Country
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = '__all__'
+
+
+#this is the serrializer for the Interest
+class InterestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Interest
+        fields = '__all__'
+
+
