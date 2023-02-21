@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -5,10 +6,6 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from rest_framework import generics
-
-
-from .models import Yatri
-
 
 #for generating token
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -20,24 +17,35 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
-#renderer start
-from rest_framework import renderers
-import json
-class UserRenderer(renderers.JSONRenderer):
-    charset='utf-8'
-    def render(self,data,accepted_media_type=None, renderer_context=None):
-        response=''
-        if 'ErrorDetail' in str(data):
-            response=json.dumps({'errors':data})
-        else:
-            response=json.dumps(data)
-        return response
-#custom renderer
 
-from django.contrib.auth import authenticate
+from accounts.rendererss import UserRenderer
 
-from accounts.serializers import UserRegistrationSerializer,UserLoginSerializer,UserChangePasswordSearializer,UserProfileSearializer,SendPasswordResetEmailSerializer,YatriSerializer
+from .models import (
+    Yatri,
+    SahayatriGuide,
+    SahayatriExpert,
+    Country,
+    Location,
+    Language,
+    Interest
+    
+    )
 
+
+from accounts.serializers import (
+    UserRegistrationSerializer,
+    UserLoginSerializer,
+    UserChangePasswordSearializer,
+    UserProfileSearializer,
+    SendPasswordResetEmailSerializer,
+    YatriSerializer,
+    SahayatriExpertSerializer,
+    SahayatriGuideSerializer,
+    LanguageSerializer,
+    LocationSerializer,
+    CountrySerializer,
+    InterestSerializer
+)
 
 class UserRegistrationView(APIView):
     renderer_classes=[UserRenderer]
@@ -69,12 +77,12 @@ class UserLoginView(APIView):
     return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserPforileView(APIView):
-    renderer_classes =[UserRenderer]
-    permission_classes=[IsAuthenticated]
-    def get(self,request,format=None):
-        serializer=UserProfileSearializer(request.user)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+# class UserPforileView(APIView):
+#     renderer_classes =[UserRenderer]
+#     permission_classes=[IsAuthenticated]
+#     def get(self,request,format=None):
+#         serializer=UserProfileSearializer(request.user)
+#         return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 class UserChangePasswordView(APIView):
@@ -105,6 +113,41 @@ class YatriView(generics.RetrieveUpdateAPIView):
     queryset = Yatri.objects.all()
 
 
+class SahayatriGuideView(generics.RetrieveUpdateAPIView):
+    renderer_classes =[UserRenderer]
+    # permission_classes=[IsAuthenticated]
+    serializer_class = SahayatriGuideSerializer
+    queryset = SahayatriGuide.objects.all()
+
+
+# create view for guide/expert as list view the serializer also needs to be created
+
+class SahayatriExpertView(generics.RetrieveUpdateAPIView):
+    renderer_classes =[UserRenderer]
+    # permission_classes=[IsAuthenticated]
+    serializer_class = SahayatriExpertSerializer
+    queryset = SahayatriExpert.objects.all()
+
+
+class CountryView(generics.ListCreateAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class = CountrySerializer
+    queryset = Country.objects.all()
+
+class LocationView(generics.ListCreateAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class = LocationSerializer
+    queryset = Location.objects.all()
+
+class LanguageView(generics.ListCreateAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class = LanguageSerializer
+    queryset = Language.objects.all()
+
+class InterestView(generics.ListCreateAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class = InterestSerializer
+    queryset = Interest.objects.all()
 
 # To return list
 # class DestinationListView(generics.ListCreateAPIView):
