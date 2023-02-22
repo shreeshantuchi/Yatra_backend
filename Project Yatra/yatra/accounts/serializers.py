@@ -97,6 +97,7 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
 
 #this is the serrializer for the yatri
 class YatriSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(source='user.email')
     class Meta:
         model = Yatri
         exclude = ['created_at','updated_at']
