@@ -150,17 +150,46 @@ class SahayatriGuide(models.Model):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField(null=True,blank=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
+    phone_no=models.CharField(max_length=20)
    
     # location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)    
     interests=models.ManyToManyField(Interest)
     bio=models.TextField(max_length=255,null=True)
-    average_cost=models.PositiveIntegerField(null=True)
 
+    average_cost_basis_choices=[
+        ('PHr','per hour'),
+        ('PDay','per hour'),
+        ('PVst','per visit'),
+        ('PPrsn','per person'),
+    ]
+    average_cost = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
+    
+    cost_basis = models.CharField(
+        max_length=10,
+        choices=average_cost_basis_choices,
+        blank=True,
+        null=True,
+        default=None,
+    )
+    
+    
     #rlationship to destination model
     #ratings implementation
 
     created_at=models.DateTimeField(auto_now_add=True)
     Updated_at=models.DateTimeField(auto_now=True)
+
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=(
+                    models.Q(average_cost__isnull=True) |
+                    models.Q(average_cost__isnull=False, cost_basis__isnull=False)
+                ),
+                name='cost_basis_if_average_cost_specified'
+            )
+        ]
 
     
     def __str__(self):
@@ -173,12 +202,13 @@ class SahayatriExpert(models.Model):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField()
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
+    phone_no=models.CharField(max_length=20)
    
     # location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)    
     interests=models.ManyToManyField(Interest,related_name='interest_sahayatri')
     bio=models.TextField(max_length=255,null=True)
     experties=models.ManyToManyField(Interest)
-    average_cost=models.PositiveIntegerField(null=True)
+    average_cost = models.DecimalField(max_digits=10, decimal_places=2)
 
     created_at=models.DateTimeField(auto_now_add=True)
     Updated_at=models.DateTimeField(auto_now=True)
