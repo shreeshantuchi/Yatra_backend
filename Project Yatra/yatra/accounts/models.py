@@ -180,16 +180,16 @@ class SahayatriGuide(models.Model):
     Updated_at=models.DateTimeField(auto_now=True)
 
 
-    class Meta:
-        constraints = [
-            models.CheckConstraint(
-                check=(
-                    models.Q(average_cost__isnull=True) |
-                    models.Q(average_cost__isnull=False, cost_basis__isnull=False)
-                ),
-                name='cost_basis_if_average_cost_specified'
-            )
-        ]
+    # class Meta:
+    #     constraints = [
+    #         models.CheckConstraint(
+    #             check=(
+    #                 models.Q(average_cost__isnull=True) |
+    #                 models.Q(average_cost__isnull=False, cost_basis__isnull=False)
+    #             ),
+    #             name='cost_basis_if_average_cost_specified'
+    #         )
+    #     ]
 
     
     def __str__(self):
@@ -208,11 +208,37 @@ class SahayatriExpert(models.Model):
     interests=models.ManyToManyField(Interest,related_name='interest_sahayatri')
     bio=models.TextField(max_length=255,null=True)
     experties=models.ManyToManyField(Interest)
-    average_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    
+    average_cost_basis_choices=[
+        ('PHr','per hour'),
+        ('PSes','per session'),
+        ('PProj','per visit'),
+        ('PPrsn','per person'),
+    ]
+    average_cost = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
+    
+    cost_basis = models.CharField(
+        max_length=10,
+        choices=average_cost_basis_choices,
+        blank=True,
+        null=True,
+        default=None,
+    )
 
     created_at=models.DateTimeField(auto_now_add=True)
     Updated_at=models.DateTimeField(auto_now=True)
 
+    # class Meta:
+    #     constraints = [
+    #         models.CheckConstraint(
+    #             check=(
+    #                 models.Q(average_cost__isnull=True) |
+    #                 models.Q(average_cost__isnull=False, cost_basis__isnull=False)
+    #             ),
+    #             name='cost_basis_if_average_cost_specified'
+    #         )
+    #     ]
     
     def __str__(self):
         return str(self.first_name)
