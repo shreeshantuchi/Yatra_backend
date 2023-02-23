@@ -150,7 +150,7 @@ class SahayatriGuide(models.Model):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField(null=True,blank=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
-    phone_no=models.CharField(max_length=20)
+    phone_no=models.CharField(max_length=20,default='XXXXXXXXXX')
    
     # location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)    
     interests=models.ManyToManyField(Interest)
@@ -202,7 +202,7 @@ class SahayatriExpert(models.Model):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField()
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
-    phone_no=models.CharField(max_length=20)
+    phone_no=models.CharField(max_length=20,default='XXXXXXXXXX')
    
     # location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)    
     interests=models.ManyToManyField(Interest,related_name='interest_sahayatri')
