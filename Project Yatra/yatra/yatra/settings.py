@@ -47,7 +47,8 @@ INSTALLED_APPS = [
      'accounts',
      'Destination',
      'Food',
-     'Activites'
+     'Activites',
+     'NewsandInfo'
 ]
 
 MIDDLEWARE = [
