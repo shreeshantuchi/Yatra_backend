@@ -8,7 +8,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 #Custom user manager class
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, password2=None):
+    def create_user(self, email, password=None,type='Y',password2=None):
         """
         Creates and saves a User with the given email, name, tc and password.
         """
@@ -16,7 +16,8 @@ class UserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
 
         user = self.model(
-            email=self.normalize_email(email)
+            email=self.normalize_email(email),
+            type=type
         )
 
         user.set_password(password)
@@ -47,6 +48,9 @@ class User(AbstractBaseUser):
     # name = models.CharField(max_length=200)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+
+    type=models.CharField(choices=[('Y','Yatri'),('G','Guide'),('E','Expert')], max_length=10,default='Y')
+
     created_at=models.DateTimeField(auto_now_add=True)
     Updated_at=models.DateTimeField(auto_now=True)
 
@@ -54,7 +58,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    # REQUIRED_FIELDS = []
+    #REQUIRED_FIELDS = []
 
     def __str__(self):
         return self.email
@@ -79,7 +83,7 @@ class User(AbstractBaseUser):
 class Interest(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=20,null=True)
-    related_keywords=models.CharField(max_length=50,null=True)
+    related_keywords=models.CharField(max_length=200,null=True)
     def __str__(self):
         return self.name
 
@@ -101,7 +105,7 @@ class Location(models.Model):
     
 
     def __str__(self):
-        return [self.longitude,self.latitude]
+        return str([self.longitude,self.latitude])
 
     # def save(self, *args, **kwargs):
     #     if not self.name:
@@ -122,15 +126,20 @@ class Language(models.Model):
 #here the user are modeled as one to one feild
 #country are modeled as one o
 class Yatri(models.Model):
+    def nameFile(instance,filename):
+        full_name = f"{instance.first_name or ''}{instance.last_name or ''}"
+        return f"yatriimages/{full_name}/{filename}"
     user=models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True)
+    profile_image=models.ImageField(null=True,blank=True,upload_to=nameFile)
     first_name = models.CharField(max_length=100,null=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField(null=True)
-    country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
-    phone_no=models.CharField(max_length=20,null=True)
-   
-    # location = models.ManyToManyField(Location)    
-    interests=models.ManyToManyField(Interest)
+    country = models.ForeignKey(Country, blank=True,null=True,on_delete=models.SET_NULL)
+    phone_no=models.CharField(max_length=20,blank=True,default='XXXXXXXXXX')
+    latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
+    
+    interests=models.ManyToManyField(Interest,blank=True)
 
 
 
@@ -145,14 +154,20 @@ class Yatri(models.Model):
 
 
 class SahayatriGuide(models.Model):
+    def nameFile(instance,filename):
+        full_name = f"{instance.first_name or ''}{instance.last_name or ''}"
+        return f"shayatriimages/guide/{full_name}/{filename}"
     user=models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True)
+    profile_image=models.ImageField(null=True,blank=True,upload_to=nameFile)
+
     first_name = models.CharField(max_length=100,null=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField(null=True,blank=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
-    phone_no=models.CharField(max_length=20)
-   
-    # location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)    
+    phone_no=models.CharField(max_length=20,null=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
+    
     interests=models.ManyToManyField(Interest)
     bio=models.TextField(max_length=255,null=True)
 
@@ -193,21 +208,26 @@ class SahayatriGuide(models.Model):
 
     
     def __str__(self):
-        return str(self.first_name)
+        return str(self.user.email)
     
 
 class SahayatriExpert(models.Model):
+    def nameFile(instance,filename):
+        full_name = f"{instance.first_name or ''}{instance.last_name or ''}"
+        return f"shayatriimages/expert/{full_name}/{filename}"
     user=models.OneToOneField(User,on_delete=models.CASCADE, primary_key=True)
+    profile_image=models.ImageField(null=True,blank=True,upload_to=nameFile)
     first_name = models.CharField(max_length=100,null=True)
     last_name = models.CharField(max_length=100, null=True, blank=True)
-    age = models.PositiveIntegerField()
+    age = models.PositiveIntegerField(null=True,blank=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
-    phone_no=models.CharField(max_length=20)
-   
-    # location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)    
+    phone_no=models.CharField(max_length=20,default='XXXXXXXXXX')
+    latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
+    
     interests=models.ManyToManyField(Interest,related_name='interest_sahayatri')
     bio=models.TextField(max_length=255,null=True)
-    experties=models.ManyToManyField(Interest)
+    expertise = models.CharField(max_length=200,null=True)
     
     
     average_cost_basis_choices=[
@@ -241,4 +261,4 @@ class SahayatriExpert(models.Model):
     #     ]
     
     def __str__(self):
-        return str(self.first_name)
+        return str(self.user.email)
