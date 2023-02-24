@@ -21,17 +21,33 @@ class NewsListView(generics.ListAPIView):
     serializer_class= NewsSerializer
     queryset= News.objects.all()
 
+
+class NewsDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class= InfoSerializer
+    queryset= News.objects.all()
+
+
+
+
+
 class InfoCreateView(generics.CreateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= InfoSerializer
-    queryset= News.objects.all()
+    queryset= Info.objects.all()
 
 class InfoUpdateView(generics.UpdateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= InfoSerializer
-    queryset= News.objects.all()
+    queryset= Info.objects.all()
 
 class InfoListView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= InfoSerializer
-    queryset= News.objects.all()
+    queryset= Info.objects.all()
+
+
+
+
+class InfoDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class= InfoSerializer
+    queryset= Info.objects.all()
