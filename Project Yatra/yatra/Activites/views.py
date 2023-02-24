@@ -20,3 +20,7 @@ class ActivityListView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= ActivitySerializer
     queryset= Activity.objects.all()
+
+class ActivityDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class= ActivitySerializer
+    queryset= Activity.objects.all()

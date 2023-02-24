@@ -20,3 +20,7 @@ class FoodListView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= FoodSerializer
     queryset= Food.objects.all()
+
+class FoodDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class= FoodSerializer
+    queryset= Food.objects.all()

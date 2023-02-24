@@ -17,6 +17,10 @@ class DestinationUpdateView(generics.UpdateAPIView):
     serializer_class= DestinationSerializer
     queryset= Destination.objects.all()
 
+class DestinationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Destination.objects.all()
+    serializer_class = DestinationSerializer
+
 class DestinationListView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= DestinationSerializer
