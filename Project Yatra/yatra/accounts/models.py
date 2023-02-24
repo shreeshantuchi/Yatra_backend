@@ -79,7 +79,7 @@ class User(AbstractBaseUser):
 class Interest(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=20,null=True)
-    related_keywords=models.CharField(max_length=50,null=True)
+    related_keywords=models.CharField(max_length=200,null=True)
     def __str__(self):
         return self.name
 
@@ -101,7 +101,7 @@ class Location(models.Model):
     
 
     def __str__(self):
-        return [self.longitude,self.latitude]
+        return str([self.longitude,self.latitude])
 
     # def save(self, *args, **kwargs):
     #     if not self.name:
@@ -128,8 +128,9 @@ class Yatri(models.Model):
     age = models.PositiveIntegerField(null=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
     phone_no=models.CharField(max_length=20,null=True)
-   
-    # location = models.ManyToManyField(Location)    
+    latitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
+    
     interests=models.ManyToManyField(Interest)
 
 
@@ -150,7 +151,9 @@ class SahayatriGuide(models.Model):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField(null=True,blank=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
-    phone_no=models.CharField(max_length=20,default='XXXXXXXXXX')
+    phone_no=models.CharField(max_length=20,null=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
    
     # location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)    
     interests=models.ManyToManyField(Interest)
@@ -203,6 +206,8 @@ class SahayatriExpert(models.Model):
     age = models.PositiveIntegerField()
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
     phone_no=models.CharField(max_length=20,default='XXXXXXXXXX')
+    latitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
    
     # location = models.ForeignKey(Location, null=True, on_delete=models.SET_NULL)    
     interests=models.ManyToManyField(Interest,related_name='interest_sahayatri')

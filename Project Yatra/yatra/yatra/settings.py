@@ -44,7 +44,10 @@ INSTALLED_APPS = [
      'rest_framework_simplejwt', #for user auth
      "corsheaders", #to solve some error
 
-     'accounts'
+     'accounts',
+     'Destination',
+     'Food',
+     'Activites'
 ]
 
 MIDDLEWARE = [

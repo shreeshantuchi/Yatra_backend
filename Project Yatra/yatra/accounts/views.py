@@ -134,6 +134,11 @@ class CountryView(generics.ListCreateAPIView):
     serializer_class = CountrySerializer
     queryset = Country.objects.all()
 
+class LocationAddView(generics.UpdateAPIView,generics.DestroyAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class = LocationSerializer
+    queryset = Location.objects.all()
+
 class LocationView(generics.ListCreateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class = LocationSerializer
