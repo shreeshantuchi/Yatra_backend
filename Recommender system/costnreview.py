@@ -4,7 +4,7 @@ import numpy as np
 
 df = read_excel("Data.xlsx")
 from sklearn.neighbors import NearestNeighbors
-location_user = ["Bhaktapur"]
+location_user = ["Kathmandu"]
 
 # for location in ['Kathmandu', 'Bhaktapur', 'Lalitpur']:
 for location in location_user:
@@ -13,7 +13,7 @@ for location in location_user:
     X = hotels_in_location[['Review', 'Average cost']]
     model = NearestNeighbors(n_neighbors=5)
     model.fit(X)
-    X_test = np.array([[5.0, 100], [4.9, 200], [5.0, 300], [5.0, 400], [5.0, 500]], dtype=np.int64)
+    X_test = np.array([[5.0, 100], [5.0, 200], [5.0, 300], [5.0, 400], [5.0, 500]], dtype=np.int64)
     distances, indices = model.kneighbors(X_test)
     top_hotels = [hotels_in_location.iloc[index]['Hotels'] for index in indices[0]]
     print(f"Top 5 hotels in {location_user}:")
