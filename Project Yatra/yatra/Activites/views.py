@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from rest_framework import generics
+from rest_framework.parsers import MultiPartParser,FormParser
 
 
-from .serializers import ActivitySerializer
-from Activites.models import Activity
+from .serializers import ActivitySerializer,ActivityImageSerializer
+from Activites.models import Activity,ActivityImage
 from accounts.rendererss import UserRenderer
 
 class ActivityCreateView(generics.CreateAPIView):
@@ -24,3 +25,9 @@ class ActivityListView(generics.ListAPIView):
 class ActivityDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class= ActivitySerializer
     queryset= Activity.objects.all()
+
+
+class ActivityImageCreateView(generics.CreateAPIView):
+    queryset = ActivityImage.objects.all()
+    serializer_class = ActivityImageSerializer
+    parser_classes = [MultiPartParser,FormParser]

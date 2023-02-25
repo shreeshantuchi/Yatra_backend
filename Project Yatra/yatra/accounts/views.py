@@ -130,6 +130,17 @@ class SahayatriExpertView(generics.RetrieveUpdateAPIView):
     queryset = SahayatriExpert.objects.all()
 
 
+class ShayatriGuideListView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class = SahayatriGuideSerializer
+    queryset = SahayatriGuide.objects.all()
+
+
+class ShayatriExpertListView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class = SahayatriExpertSerializer
+    queryset = SahayatriExpert.objects.all()
+
 class CountryView(generics.ListCreateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class = CountrySerializer

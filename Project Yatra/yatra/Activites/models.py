@@ -1,4 +1,5 @@
 from django.db import models
+import os
 
 class Activity(models.Model):
     name = models.CharField(max_length=100)
@@ -7,6 +8,7 @@ class Activity(models.Model):
         ('ENT','Entertainment'),
         ('SPT','Sports'),
         ('ADV','Adventure'),
+        ('LOC','Local'),
         ('OTH','Others'),
 
     ]
@@ -24,3 +26,19 @@ class Activity(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.name
+    
+
+class ActivityImage(models.Model):
+    def nameFile(instance,filename):
+        full_name = f"{instance.activity.name or ''}"
+        return f"Destination/{full_name}/{filename}"
+     
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to=nameFile)
+
+
+    def __str__(self):
+        return str(self.activity.name+'/'+str(self.id)+'/'+os.path.basename(self.image.name))
+    
+    class Meta:
+        ordering=['activity','id','image']

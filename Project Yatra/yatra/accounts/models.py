@@ -192,7 +192,7 @@ class SahayatriGuide(models.Model):
     #ratings implementation
 
     created_at=models.DateTimeField(auto_now_add=True)
-    Updated_at=models.DateTimeField(auto_now=True)
+    updated_at=models.DateTimeField(auto_now=True)
 
 
     # class Meta:
@@ -247,7 +247,7 @@ class SahayatriExpert(models.Model):
     )
 
     created_at=models.DateTimeField(auto_now_add=True)
-    Updated_at=models.DateTimeField(auto_now=True)
+    updated_at=models.DateTimeField(auto_now=True)
 
     # class Meta:
     #     constraints = [
