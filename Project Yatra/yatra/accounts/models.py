@@ -49,7 +49,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
-    type=models.CharField(choices=[('Y','Yatri'),('G','Guide'),('E','Expert')], max_length=10)
+    type=models.CharField(choices=[('Y','Yatri'),('G','Guide'),('E','Expert')], max_length=10,default='Y')
 
     created_at=models.DateTimeField(auto_now_add=True)
     Updated_at=models.DateTimeField(auto_now=True)
