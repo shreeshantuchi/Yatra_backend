@@ -51,15 +51,3 @@ class DestinationImageCreateView(generics.CreateAPIView):
     queryset = DestinationImage.objects.all()
     serializer_class = DestinationImageSerializer
     parser_classes = [MultiPartParser,FormParser]
-
-    def post(self, request, *args, **kwargs):
-        destination = get_object_or_404(Destination, pk=kwargs['pk'])
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            image_data = serializer.validated_data['image']
-            destination = serializer.validated_data['destination']
-            image_file = ContentFile(base64.b64decode(image_data))
-            image = DestinationImage(destination=destination, image=image_file)
-            image.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
