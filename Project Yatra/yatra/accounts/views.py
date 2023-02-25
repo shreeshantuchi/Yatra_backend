@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser,FormParser
 
 from rest_framework import generics
 
@@ -111,6 +111,7 @@ class YatriView(generics.RetrieveUpdateAPIView):
     # permission_classes=[IsAuthenticated]
     serializer_class = YatriSerializer
     queryset = Yatri.objects.all()
+    parser_classes=[MultiPartParser,FormParser]
 
 
 class SahayatriGuideView(generics.RetrieveUpdateAPIView):
