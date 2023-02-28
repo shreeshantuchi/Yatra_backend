@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate
-from rest_framework import status
+from rest_framework import status,viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -27,7 +27,8 @@ from .models import (
     Country,
     Location,
     Language,
-    Interest
+    Interest,
+    InterestRating
     
     )
 
@@ -44,7 +45,8 @@ from accounts.serializers import (
     LanguageSerializer,
     LocationSerializer,
     CountrySerializer,
-    InterestSerializer
+    InterestSerializer,
+    InterestRatingSerializer
 )
 
 class UserRegistrationView(APIView):
@@ -173,3 +175,8 @@ class InterestView(generics.ListCreateAPIView):
 
 # urls
 # path("destination/", DestinationListView.as_view(), name='destination-list')
+
+
+class InterestRatingViewSet(viewsets.ModelViewSet):
+    queryset = InterestRating.objects.all()
+    serializer_class = InterestRatingSerializer

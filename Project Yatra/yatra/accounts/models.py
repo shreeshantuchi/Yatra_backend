@@ -88,6 +88,7 @@ class Interest(models.Model):
         return self.name
 
 
+
 #Country model for now the falgs are processed in the fornt end
 class Country(models.Model):
     name = models.CharField(max_length=100)
@@ -135,11 +136,11 @@ class Yatri(models.Model):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField(null=True)
     country = models.ForeignKey(Country, blank=True,null=True,on_delete=models.SET_NULL)
-    phone_no=models.CharField(max_length=20,blank=True,default='XXXXXXXXXX')
+    phone_no=models.CharField(max_length=20,null=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     
-    interests=models.ManyToManyField(Interest,blank=True)
+    interests=models.ManyToManyField(Interest,through='InterestRating')
 
 
 
@@ -151,6 +152,10 @@ class Yatri(models.Model):
         return str(self.user.email)
     
 
+class InterestRating(models.Model):
+    user_profile = models.ForeignKey(Yatri, on_delete=models.CASCADE)
+    interest = models.ForeignKey(Interest, on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
 
 
 class SahayatriGuide(models.Model):
@@ -221,7 +226,7 @@ class SahayatriExpert(models.Model):
     last_name = models.CharField(max_length=100, null=True, blank=True)
     age = models.PositiveIntegerField(null=True,blank=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
-    phone_no=models.CharField(max_length=20,default='XXXXXXXXXX')
+    phone_no=models.CharField(max_length=20,null=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     

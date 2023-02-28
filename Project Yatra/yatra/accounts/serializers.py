@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User,Yatri,Country,Interest,Location,Language,SahayatriExpert,SahayatriGuide
+from accounts.models import User,Yatri,Country,Interest,Location,Language,SahayatriExpert,SahayatriGuide,InterestRating
 from django.db import models
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -93,13 +93,18 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
 
 
 
-
+class InterestRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InterestRating
+        fields = '__all__'
 
 #this is the serrializer for the yatri
 class YatriSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source='user.email')
+    interest=InterestRatingSerializer(many=True)
     class Meta:
         model = Yatri
+        fields=['interest']
         exclude = ['created_at','updated_at']
 
 

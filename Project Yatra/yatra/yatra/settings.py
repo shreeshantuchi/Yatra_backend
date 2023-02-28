@@ -49,7 +49,8 @@ INSTALLED_APPS = [
      'Destination',
      'Food',
      'Activites',
-     'NewsandInfo'
+     'NewsandInfo',
+     'populate'
 ]
 
 MIDDLEWARE = [

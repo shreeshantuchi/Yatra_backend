@@ -1,18 +1,27 @@
 from django.db import models
 import os
+from multiselectfield import MultiSelectField
+
 
 class Food(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     type_choices=[
-        ('LOC', 'Local food provider'),
+        ('LOC', 'Local'),
         ('RST', 'Restaurant'),
         ('CAF', 'Cafe'),
         ('BAK', 'Bakery'),
         ('FTK', 'Food truck'),
-        ('OTH','Others')
+        ('OTH','Others'),
+        ('CONT','Continental'),
+        ('FRN','French'),
+        ('ITL','Italian'),
+        ('IND','Indian'),
+        ('EUR','European'),
+        ('BAR','Bar'),
+        ('ASN','Asian')
     ]
-    type= models.CharField(max_length=50,choices=type_choices,default='OTH')
+    type= MultiSelectField(max_length=50,choices=type_choices,default='OTH')
     phone_no=models.CharField(max_length=20,default='XXXXXXXXXX')
     average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     related_keywords = models.CharField(max_length=255, null=True, blank=True)

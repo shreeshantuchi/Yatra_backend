@@ -1,5 +1,7 @@
 from django.db import models
 import os
+from multiselectfield import MultiSelectField
+
 
 class Activity(models.Model):
     name = models.CharField(max_length=100)
@@ -12,7 +14,7 @@ class Activity(models.Model):
         ('OTH','Others'),
 
     ]
-    type= models.CharField(max_length=10,choices=type_choices,default='OTH')
+    type= MultiSelectField(max_length=10,choices=type_choices,default='OTH')
     # images = models.ImageField(upload_to='destination_images/')
     phone_no=models.CharField(max_length=20,default='XXXXXXXXXX')
     average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
