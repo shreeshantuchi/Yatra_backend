@@ -2,9 +2,15 @@ from django.db import models
 from datetime import datetime
 # from geopy.geocoders import Nominatim
 # this geopy  needs to be resesrached further
+import requests
+from django.core.files import File
+import urllib
+import os
 
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+
+
 
 #Custom user manager class
 class UserManager(BaseUserManager):
@@ -93,6 +99,8 @@ class Interest(models.Model):
 #Country model for now the falgs are processed in the fornt end
 class Country(models.Model):
     name = models.CharField(max_length=100)
+    flag=models.ImageField(upload_to="Countries/", blank=True)
+    flag_url=models.URLField(blank=True)
     short_name=models.CharField(max_length=30)
 
     def __str__(self):

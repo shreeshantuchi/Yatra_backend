@@ -8,6 +8,7 @@ from django.utils.encoding import force_bytes
 
 
 
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     #we are writing this becuz we need ot confirm password field in our 
     #Registration request

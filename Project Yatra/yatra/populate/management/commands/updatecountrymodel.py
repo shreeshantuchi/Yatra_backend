@@ -10,7 +10,7 @@ class Command(BaseCommand):
         pass
     
     def handle(self, *args, **options):
-        df=pd.read_csv('countries.csv')
-        for NAME,SNAME in zip(df.Name,df.Code):
-            models=Country(name=NAME,short_name=SNAME)
+        df=pd.read_csv('combined.csv')
+        for NAME,FLAG_URL,SNAME in zip(df.Name,df.Flag,df.Code):
+            models=Country(name=NAME,flag_url=FLAG_URL,short_name=SNAME)
             models.save()
