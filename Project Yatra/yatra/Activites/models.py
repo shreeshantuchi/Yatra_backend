@@ -1,6 +1,7 @@
 from django.db import models
 import os
 from multiselectfield import MultiSelectField
+from Destination.models import Destination
 
 
 class Activity(models.Model):
@@ -14,18 +15,22 @@ class Activity(models.Model):
         ('OTH','Others'),
 
     ]
-    type= MultiSelectField(max_length=10,choices=type_choices,default='OTH')
+    type= MultiSelectField(max_length=255,choices=type_choices,default='OTH')
     # images = models.ImageField(upload_to='destination_images/')
     phone_no=models.CharField(max_length=20,default='XXXXXXXXXX')
     average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     related_keywords = models.CharField(max_length=255, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6,null=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6,null=True,blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6,null=True,blank=True)
+    destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='activity')
 
 
 
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
+    
+    
+    
     def __str__(self):
         return self.name
     
