@@ -84,6 +84,7 @@ class Interest(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=20,null=True)
     related_keywords=models.CharField(max_length=200,null=True)
+    
     def __str__(self):
         return self.name
 
@@ -140,7 +141,7 @@ class Yatri(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     
-    interests=models.ManyToManyField(Interest,through='InterestRating')
+    interests=models.ManyToManyField(Interest)
 
 
 
@@ -151,11 +152,6 @@ class Yatri(models.Model):
     def __str__(self):
         return str(self.user.email)
     
-
-class InterestRating(models.Model):
-    user_profile = models.ForeignKey(Yatri, on_delete=models.CASCADE)
-    interest = models.ForeignKey(Interest, on_delete=models.CASCADE)
-    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
 
 
 class SahayatriGuide(models.Model):

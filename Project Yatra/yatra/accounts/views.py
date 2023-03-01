@@ -27,9 +27,7 @@ from .models import (
     Country,
     Location,
     Language,
-    Interest,
-    InterestRating
-    
+    Interest    
     )
 
 
@@ -45,8 +43,7 @@ from accounts.serializers import (
     LanguageSerializer,
     LocationSerializer,
     CountrySerializer,
-    InterestSerializer,
-    InterestRatingSerializer
+    InterestSerializer
 )
 
 class UserRegistrationView(APIView):
@@ -177,6 +174,3 @@ class InterestView(generics.ListCreateAPIView):
 # path("destination/", DestinationListView.as_view(), name='destination-list')
 
 
-class InterestRatingViewSet(viewsets.ModelViewSet):
-    queryset = InterestRating.objects.all()
-    serializer_class = InterestRatingSerializer
