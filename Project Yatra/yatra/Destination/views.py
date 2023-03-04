@@ -10,10 +10,15 @@ from django.core.files.base import ContentFile
 
 
 
+
 from .serializers import DestinationSerializer
 from Destination.models import Destination,DestinationImage
 from Destination.serializers import DestinationSerializer,DestinationImageSerializer
 from accounts.rendererss import UserRenderer
+from Activites.serializers import ActivitySerializer
+from Activites.models import Activity
+from Food.serializers import FoodSerializer
+from Food.models import Food
 
 class DestinationCreateView(generics.CreateAPIView):
     renderer_classes =[UserRenderer]
@@ -37,10 +42,13 @@ class DestinationUpdateView(generics.UpdateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= DestinationSerializer
     queryset= Destination.objects.all()
+    lookup_url_kwarg = 'destination_id'
 
 class DestinationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    renderer_classes =[UserRenderer]
     queryset = Destination.objects.all()
     serializer_class = DestinationSerializer
+    lookup_url_kwarg = 'destination_id'
 
 class DestinationListView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
@@ -51,3 +59,19 @@ class DestinationImageCreateView(generics.CreateAPIView):
     queryset = DestinationImage.objects.all()
     serializer_class = DestinationImageSerializer
     parser_classes = [MultiPartParser,FormParser]
+
+
+class ActivityListView(generics.ListAPIView):
+    serializer_class = ActivitySerializer
+    def get_queryset(self):
+        destination_id = self.kwargs.get('destination_id')
+        print(destination_id)
+        return Activity.objects.filter(destination__id=destination_id)
+    
+
+class FoodListView(generics.ListAPIView):
+    serializer_class = FoodSerializer
+    def get_queryset(self):
+        destination_id = self.kwargs.get('destination_id')
+        print(destination_id)
+        return Food.objects.filter(destination__id=destination_id)

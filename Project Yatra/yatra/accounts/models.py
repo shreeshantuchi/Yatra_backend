@@ -102,7 +102,7 @@ class Country(models.Model):
     flag=models.ImageField(upload_to="Countries/", blank=True)
     flag_url=models.URLField(blank=True)
     short_name=models.CharField(max_length=30)
-
+ 
     def __str__(self):
         return self.name
 

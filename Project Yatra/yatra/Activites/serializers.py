@@ -11,5 +11,5 @@ class ActivitySerializer(serializers.ModelSerializer):
     images=ActivityImageSerializer(many=True,read_only=True)
     class Meta:
         model = Activity
-        fields =['name','description','type','phone_no','average_price','related_keywords','latitude','longitude','images']
+        fields =['id','name','description','type','phone_no','location','average_price','related_keywords','latitude','longitude','images']
 

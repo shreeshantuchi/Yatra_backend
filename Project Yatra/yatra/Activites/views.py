@@ -8,7 +8,7 @@ from Activites.models import Activity,ActivityImage
 from accounts.rendererss import UserRenderer
 
 class ActivityCreateView(generics.CreateAPIView):
-    renderer_classes =[UserRenderer]
+    #renderer_classes =[UserRenderer]
     serializer_class= ActivitySerializer
     queryset= Activity.objects.all()
 
