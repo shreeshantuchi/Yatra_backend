@@ -116,7 +116,7 @@ class Country(models.Model):
     short_name=models.CharField(max_length=30)
  
     def __str__(self):
-        return self.name
+        return self.name+f'({self.short_name})'
 
 #location model store latitue and lgoitude
 #name is reverse gerated from the long and lat
