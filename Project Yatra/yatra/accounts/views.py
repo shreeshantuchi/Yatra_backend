@@ -38,8 +38,7 @@ from accounts.serializers import (
     UserChangePasswordSearializer,
     UserProfileSearializer,
     SendPasswordResetEmailSerializer,
-    YatriSerializerView,
-    YatriSerializerUpdate,
+    YatriSerializer,
     SahayatriExpertSerializer,
     SahayatriGuideSerializer,
     LanguageSerializer,
@@ -107,20 +106,12 @@ class SendPasswordResetEmaiView(APIView):
 
 
 
-class YatriView(generics.RetrieveAPIView):
+class YatriView(generics.RetrieveUpdateAPIView):
     renderer_classes =[UserRenderer]
     # permission_classes=[IsAuthenticated]
-    serializer_class = YatriSerializerView
+    serializer_class = YatriSerializer
     queryset = Yatri.objects.all()
     parser_classes=[MultiPartParser,FormParser]
-
-class YatriUpdateView(generics.UpdateAPIView):
-    renderer_classes =[UserRenderer]
-    # permission_classes=[IsAuthenticated]
-    serializer_class = YatriSerializerUpdate
-    queryset = Yatri.objects.all()
-    parser_classes=[MultiPartParser,FormParser]
-
 
 class SahayatriGuideView(generics.RetrieveUpdateAPIView):
     renderer_classes =[UserRenderer]
@@ -186,7 +177,7 @@ class YatriLanguageView(generics.ListAPIView):
 
 #Now to update the language for a yatri same as for interest
 class YatriLanguageUpdateView(generics.UpdateAPIView):
-    serializer_class = YatriSerializerView
+    serializer_class = YatriSerializer
     # permission_classes = [IsAuthenticated]
     
     def get_object(self):
@@ -305,7 +296,7 @@ class YatriInterestView(generics.ListAPIView):
 
 
 class YatriInterestUpdateView(generics.UpdateAPIView):
-    serializer_class = YatriSerializerView
+    serializer_class = YatriSerializer
     # permission_classes = [IsAuthenticated]
     
     def get_object(self):

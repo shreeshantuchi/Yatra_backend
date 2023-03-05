@@ -5,7 +5,6 @@ from accounts.views import (
     UserChangePasswordView,
     SendPasswordResetEmaiView,
     YatriView,
-    YatriUpdateView,
     InterestView,
     CountryView,
     LocationView,
@@ -35,7 +34,6 @@ urlpatterns = [
     path('send-rest-password-email/',SendPasswordResetEmaiView.as_view(),name="send-rest-password-email"),
 
     path('user/yatri/<int:pk>/', YatriView.as_view(), name='yatri-profile'),
-    path('user/yatri/<int:pk>/update/', YatriUpdateView.as_view(), name='yatri-profile-update'),
     
     path('user/expert/<int:pk>/', SahayatriExpertView.as_view(), name='expert_profile'),
     path('user/guide/<int:pk>/', SahayatriGuideView.as_view(), name='guide_profile'),
@@ -52,6 +50,9 @@ urlpatterns = [
     path('user/yatri/<int:yatri_id>/interest/', YatriInterestUpdateView.as_view(), name='yatri-interest-update'),
     path('user/yatri/<int:yatri_id>/interest/list/', YatriInterestView.as_view(), name='yatri-interest-list'),
     
+
+
+
     path('user/yatri/<int:yatri_id>/language/', YatriLanguageUpdateView.as_view(), name='yatri-language-update'),
     path('user/yatri/<int:yatri_id>/language/list/', YatriLanguageView.as_view(), name='yatri-language-list'),
 

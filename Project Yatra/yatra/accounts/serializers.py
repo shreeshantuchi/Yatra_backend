@@ -102,7 +102,7 @@ class InterestSerializer(serializers.ModelSerializer):
 
 
 #this is the serrializer for the yatri
-class YatriSerializerView(serializers.ModelSerializer):
+class YatriSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source='user.email')
     #commenting bellow line shows interest as list of ids when the yatri profile is fetched
     #interests = InterestSerializer(many=True)
@@ -111,14 +111,10 @@ class YatriSerializerView(serializers.ModelSerializer):
         model = Yatri
         exclude = ['created_at','updated_at']
 
-class YatriSerializerUpdate(serializers.ModelSerializer):
-    class Meta:
-        model = Yatri
-        exclude = ['created_at','updated_at']
-
 
 #this is the serrializer for the Interest
 class SahayatriExpertSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(source='user.email')
     class Meta:
         model = SahayatriExpert
         exclude = ['created_at','updated_at']
@@ -126,6 +122,7 @@ class SahayatriExpertSerializer(serializers.ModelSerializer):
 
 #this is the serrializer for the Interest
 class SahayatriGuideSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(source='user.email')
     class Meta:
         model = SahayatriGuide
         exclude = ['created_at','updated_at']
