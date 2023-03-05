@@ -2,7 +2,6 @@ from django.db import models
 from datetime import datetime
 # from geopy.geocoders import Nominatim
 # this geopy  needs to be resesrached further
-import requests
 from django.core.files import File
 import urllib
 import os
@@ -10,6 +9,7 @@ import os
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
+from Destination.models import Destination
 
 
 #Custom user manager class
@@ -90,9 +90,21 @@ class Interest(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=20,null=True)
     related_keywords=models.CharField(max_length=200,null=True)
+
+    type_choices =[ 
+        ('DES','Destination'),
+        ('FOD','Food'),
+        ('ACT','Activity')
+    ]
+    
+
+    type=models.CharField(
+        max_length=20,
+        choices=type_choices
+    )
     
     def __str__(self):
-        return self.name
+        return self.type+"/"+self.name
 
 
 
@@ -128,9 +140,14 @@ class Location(models.Model):
 class Language(models.Model):
     name = models.CharField(max_length=200)
     short_name=models.CharField(max_length=30)
+    def nameFile(instance,filename):
+        return f"Languages/{instance.short_name}"
+    flag = models.ImageField(upload_to=nameFile,blank=True)
+    flag_url=models.URLField(blank=True)
+
 
     def __str__(self):
-        return self.name
+        return self.name+f'({self.short_name})'
 
 #this is yartri model or profile for the users
 #here the user are modeled as one to one feild
@@ -149,7 +166,9 @@ class Yatri(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     
-    interests=models.ManyToManyField(Interest)
+    
+    interests=models.ManyToManyField(Interest,related_name='interest_yatri')
+    languages=models.ManyToManyField(Language)
 
 
 
@@ -174,15 +193,17 @@ class SahayatriGuide(models.Model):
     age = models.PositiveIntegerField(null=True,blank=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
     phone_no=models.CharField(max_length=20,null=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
-    
-    interests=models.ManyToManyField(Interest)
+    latitude = models.DecimalField(max_digits=20, decimal_places=15,blank=True,null=True)
+    longitude = models.DecimalField(max_digits=20, decimal_places=15,blank=True,null=True)
+    destination = models.ManyToManyField(Destination)
+
+    interests=models.ManyToManyField(Interest,related_name='interest_guide')
+    languages=models.ManyToManyField(Language)
     bio=models.TextField(max_length=255,null=True)
 
     average_cost_basis_choices=[
         ('PHr','per hour'),
-        ('PDay','per hour'),
+        ('PDay','per day'),
         ('PVst','per visit'),
         ('PPrsn','per person'),
     ]
@@ -200,6 +221,7 @@ class SahayatriGuide(models.Model):
     #rlationship to destination model
     #ratings implementation
 
+    is_verified=models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
@@ -234,7 +256,10 @@ class SahayatriExpert(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
     
+
     interests=models.ManyToManyField(Interest,related_name='interest_sahayatri')
+    languages=models.ManyToManyField(Language)
+
     bio=models.TextField(max_length=255,null=True)
     expertise = models.CharField(max_length=200,null=True)
     
@@ -242,7 +267,7 @@ class SahayatriExpert(models.Model):
     average_cost_basis_choices=[
         ('PHr','per hour'),
         ('PSes','per session'),
-        ('PProj','per visit'),
+        ('PProj','per project'),
         ('PPrsn','per person'),
     ]
     average_cost = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
@@ -255,6 +280,7 @@ class SahayatriExpert(models.Model):
         default=None,
     )
 
+    is_verified=models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 

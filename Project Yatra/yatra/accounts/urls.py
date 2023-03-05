@@ -12,7 +12,11 @@ from accounts.views import (
     SahayatriGuideView,
     LanguageView,
     ShayatriExpertListView,
-    ShayatriGuideListView
+    ShayatriGuideListView,
+    YatriInterestUpdateView,
+    YatriInterestView,
+    YatriLanguageUpdateView,
+    YatriLanguageView
 )
 
 
@@ -33,9 +37,15 @@ urlpatterns = [
     path('guidelist/', ShayatriGuideListView.as_view(), name='guide_list'),
 
 
-    path('interests/',InterestView.as_view(),name="interests"),
     path('countries/',CountryView.as_view(),name="countries"),
     path('languages/',LanguageView.as_view(),name="languages"),
+    
+    path('interests/',InterestView.as_view(),name="interests"),
+    path('user/yatri/<int:yatri_id>/interest/', YatriInterestUpdateView.as_view(), name='yatri-interest-update'),
+    path('user/yatri/<int:yatri_id>/interest/list/', YatriInterestView.as_view(), name='yatri-interest-list'),
+    
+    path('user/yatri/<int:yatri_id>/language/', YatriLanguageUpdateView.as_view(), name='yatri-language-update'),
+    path('user/yatri/<int:yatri_id>/language/list/', YatriLanguageView.as_view(), name='yatri-language-list'),
 
 
 

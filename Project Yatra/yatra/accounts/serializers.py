@@ -104,7 +104,8 @@ class InterestSerializer(serializers.ModelSerializer):
 #this is the serrializer for the yatri
 class YatriSerializer(serializers.ModelSerializer):
     email = serializers.CharField(source='user.email')
-    interests = InterestSerializer(many=True)
+    #commenting bellow line shows interest as list of ids when the yatri profile is fetched
+    #interests = InterestSerializer(many=True)
 
     class Meta:
         model = Yatri
@@ -152,5 +153,16 @@ class CountrySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
+class YatriInterestSerializer(serializers.ModelSerializer):
+    interests = serializers.PrimaryKeyRelatedField(queryset=Interest.objects.all(), many=True)
+    
+    class Meta:
+        model = Yatri
+        fields = ('interests',)
+        
+    def update(self, instance, validated_data):
+        interests = validated_data.pop('interests')
+        instance.interests.set(interests)
+        instance.save()
+        return instance
 

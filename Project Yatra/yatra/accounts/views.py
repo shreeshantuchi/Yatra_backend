@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser,FormParser
+from django.shortcuts import get_object_or_404
 
 from rest_framework import generics
 
@@ -118,6 +119,7 @@ class SahayatriGuideView(generics.RetrieveUpdateAPIView):
     # permission_classes=[IsAuthenticated]
     serializer_class = SahayatriGuideSerializer
     queryset = SahayatriGuide.objects.all()
+    parser_classes=[MultiPartParser,FormParser]
 
 
 # create view for guide/expert as list view the serializer also needs to be created
@@ -127,6 +129,7 @@ class SahayatriExpertView(generics.RetrieveUpdateAPIView):
     # permission_classes=[IsAuthenticated]
     serializer_class = SahayatriExpertSerializer
     queryset = SahayatriExpert.objects.all()
+    parser_classes=[MultiPartParser,FormParser]
 
 
 class ShayatriGuideListView(generics.ListAPIView):
@@ -159,12 +162,89 @@ class LanguageView(generics.ListCreateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class = LanguageSerializer
     queryset = Language.objects.all()
+    parser_classes=[FormParser,MultiPartParser]
+
+#need view to update language and view language
+class YatriLanguageView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=LanguageSerializer
+    
+    def get_queryset(self):
+        # Get the user profile object based on the user ID in the request
+        user_id = self.kwargs['yatri_id']
+        yatri = Yatri.objects.get(user_id=user_id)
+        # Return the interests associated with the user profile
+        return yatri.languages.all()
+
+#Now to update the language for a yatri same as for interest
+class YatriLanguageUpdateView(generics.UpdateAPIView):
+    serializer_class = YatriSerializer
+    # permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        yatri_id = self.kwargs.get('yatri_id')
+        return get_object_or_404(Yatri, pk=yatri_id)
+    
+    def update(self, request, *args, **kwargs):
+        yatri = self.get_object()
+        language_ids = request.data.get('languages', [])
+
+        languages = Language.objects.filter(id__in=language_ids)
+        # if len(interests) != len(interest_ids):
+        #     return Response({'error': 'Please provide valid interest IDs.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        yatri.languages.set(languages)
+
+        serializer = self.get_serializer(yatri, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
 
 class InterestView(generics.ListCreateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class = InterestSerializer
     queryset = Interest.objects.all()
 
+
+
+#replicate these parts for guide and expert
+class YatriInterestView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=InterestSerializer
+    
+    def get_queryset(self):
+        # Get the user profile object based on the user ID in the request
+        user_id = self.kwargs['yatri_id']
+        yatri = Yatri.objects.get(user_id=user_id)
+        # Return the interests associated with the user profile
+        return yatri.interests.all()
+
+
+class YatriInterestUpdateView(generics.UpdateAPIView):
+    serializer_class = YatriSerializer
+    # permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        yatri_id = self.kwargs.get('yatri_id')
+        return get_object_or_404(Yatri, pk=yatri_id)
+    
+    def update(self, request, *args, **kwargs):
+        yatri = self.get_object()
+        interest_ids = request.data.get('interests', [])
+
+        interests = Interest.objects.filter(id__in=interest_ids)
+        # if len(interests) != len(interest_ids):
+        #     return Response({'error': 'Please provide valid interest IDs.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        yatri.interests.set(interests)
+
+        serializer = self.get_serializer(yatri, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
 # To return list
 # class DestinationListView(generics.ListCreateAPIView):
 #     queryset = Destination.objects.all()

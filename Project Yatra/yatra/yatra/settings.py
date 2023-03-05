@@ -44,6 +44,7 @@ INSTALLED_APPS = [
      'rest_framework', #for api
      'rest_framework_simplejwt', #for user auth
      "corsheaders", #to solve some error
+     'django_extensions',
 
      'accounts',
      'Destination',
