@@ -152,7 +152,7 @@ class CountrySerializer(serializers.ModelSerializer):
         model = Country
         fields = '__all__'
 
-
+#this serializer is not used currently
 class YatriInterestSerializer(serializers.ModelSerializer):
     interests = serializers.PrimaryKeyRelatedField(queryset=Interest.objects.all(), many=True)
     
