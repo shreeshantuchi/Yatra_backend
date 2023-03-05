@@ -38,7 +38,8 @@ from accounts.serializers import (
     UserChangePasswordSearializer,
     UserProfileSearializer,
     SendPasswordResetEmailSerializer,
-    YatriSerializer,
+    YatriSerializerView,
+    YatriSerializerUpdate,
     SahayatriExpertSerializer,
     SahayatriGuideSerializer,
     LanguageSerializer,
@@ -106,10 +107,17 @@ class SendPasswordResetEmaiView(APIView):
 
 
 
-class YatriView(generics.RetrieveUpdateAPIView):
+class YatriView(generics.RetrieveAPIView):
     renderer_classes =[UserRenderer]
     # permission_classes=[IsAuthenticated]
-    serializer_class = YatriSerializer
+    serializer_class = YatriSerializerView
+    queryset = Yatri.objects.all()
+    parser_classes=[MultiPartParser,FormParser]
+
+class YatriUpdateView(generics.UpdateAPIView):
+    renderer_classes =[UserRenderer]
+    # permission_classes=[IsAuthenticated]
+    serializer_class = YatriSerializerUpdate
     queryset = Yatri.objects.all()
     parser_classes=[MultiPartParser,FormParser]
 
@@ -164,7 +172,7 @@ class LanguageView(generics.ListCreateAPIView):
     queryset = Language.objects.all()
     parser_classes=[FormParser,MultiPartParser]
 
-#need view to update language and view language
+# view to  view language for yatri
 class YatriLanguageView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
     serializer_class=LanguageSerializer
@@ -178,7 +186,7 @@ class YatriLanguageView(generics.ListAPIView):
 
 #Now to update the language for a yatri same as for interest
 class YatriLanguageUpdateView(generics.UpdateAPIView):
-    serializer_class = YatriSerializer
+    serializer_class = YatriSerializerView
     # permission_classes = [IsAuthenticated]
     
     def get_object(self):
@@ -202,6 +210,80 @@ class YatriLanguageUpdateView(generics.UpdateAPIView):
         return Response(serializer.data)
 
 
+# view to  view language for guide
+class GuideLanguageView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=LanguageSerializer
+    
+    def get_queryset(self):
+        # Get the user profile object based on the user ID in the request
+        user_id = self.kwargs['guide_id']
+        sahayatri = SahayatriGuide.objects.get(user_id=user_id)
+        # Return the interests associated with the user profile
+        return sahayatri.languages.all()
+
+#Now to update the language for a yatri same as for interest
+class GuideLanguageUpdateView(generics.UpdateAPIView):
+    serializer_class = SahayatriGuideSerializer
+    # permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        sahayatri_id = self.kwargs.get('guide_id')
+        return get_object_or_404(SahayatriGuide, pk=sahayatri_id)
+    
+    def update(self, request, *args, **kwargs):
+        sahayatri = self.get_object()
+        language_ids = request.data.get('languages', [])
+
+        languages = Language.objects.filter(id__in=language_ids)
+        # if len(interests) != len(interest_ids):
+        #     return Response({'error': 'Please provide valid interest IDs.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        sahayatri.languages.set(languages)
+
+        serializer = self.get_serializer(sahayatri, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
+#languages for expert
+class ExpertLanguageView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=LanguageSerializer
+    
+    def get_queryset(self):
+        # Get the user profile object based on the user ID in the request
+        user_id = self.kwargs['expert_id']
+        sahayatri = SahayatriExpert.objects.get(user_id=user_id)
+        # Return the interests associated with the user profile
+        return sahayatri.languages.all()
+
+#Now to update the language for a yatri same as for interest
+class ExpertLanguageUpdateView(generics.UpdateAPIView):
+    serializer_class = SahayatriExpertSerializer
+    # permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        sahayatri_id = self.kwargs.get('expert_id')
+        return get_object_or_404(SahayatriExpert, pk=sahayatri_id)
+    
+    def update(self, request, *args, **kwargs):
+        sahayatri = self.get_object()
+        language_ids = request.data.get('languages', [])
+
+        languages = Language.objects.filter(id__in=language_ids)
+        # if len(interests) != len(interest_ids):
+        #     return Response({'error': 'Please provide valid interest IDs.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        sahayatri.languages.set(languages)
+
+        serializer = self.get_serializer(sahayatri, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
+
 class InterestView(generics.ListCreateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class = InterestSerializer
@@ -223,7 +305,7 @@ class YatriInterestView(generics.ListAPIView):
 
 
 class YatriInterestUpdateView(generics.UpdateAPIView):
-    serializer_class = YatriSerializer
+    serializer_class = YatriSerializerView
     # permission_classes = [IsAuthenticated]
     
     def get_object(self):
