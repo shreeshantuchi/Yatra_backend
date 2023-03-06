@@ -6,6 +6,7 @@ from accounts.views import (
     SendPasswordResetEmaiView,
     YatriView,
     InterestView,
+    InterestTypeView,
     CountryView,
     SahayatriExpertView,
     SahayatriGuideView,
@@ -14,10 +15,13 @@ from accounts.views import (
     ShayatriGuideListView,
     YatriInterestUpdateView,
     YatriInterestView,
+    YatriInterestTypeView,
     GuideInterestUpdateView,
     GuideInterestView,
+    GuideInterestTypeView,
     ExpertInterestUpdateView,
     ExpertInterestView,
+    ExpertInterestTypeView,
     YatriLanguageUpdateView,
     YatriLanguageView,
     GuideLanguageUpdateView,
@@ -49,18 +53,24 @@ urlpatterns = [
     path('languages/',LanguageView.as_view(),name="languages"),
     
     path('interests/',InterestView.as_view(),name="interests"),
+    path('interests/<str:interest_type>/',InterestTypeView.as_view(),name="interests"),
+
     
 
 
-    path('user/yatri/<int:yatri_id>/interest/', YatriInterestUpdateView.as_view(), name='yatri-interest-update'),
-    path('user/yatri/<int:yatri_id>/interest/list/', YatriInterestView.as_view(), name='yatri-interest-list'),
-    
-    path('user/guide/<int:guide_id>/interest/', GuideInterestUpdateView.as_view(), name='yatri-interest-update'),
-    path('user/guide/<int:guide_id>/interest/list/', GuideInterestView.as_view(), name='yatri-interest-list'),
-    
-    path('user/expert/<int:expert_id>/interest/', ExpertInterestUpdateView.as_view(), name='yatri-interest-update'),
-    path('user/expert/<int:expert_id>/interest/list/', ExpertInterestView.as_view(), name='yatri-interest-list'),
-    
+    path('user/yatri/<int:yatri_id>/interest/update/', YatriInterestUpdateView.as_view(), name='yatri-interest-update'),
+    path('user/yatri/<int:yatri_id>/interest/', YatriInterestView.as_view(), name='yatri-interest-list'),
+    path('user/yatri/<int:yatri_id>/interest/<str:interest_type>/', YatriInterestTypeView.as_view(), name='yatri-interest-type-list'),
+
+
+    path('user/guide/<int:guide_id>/interest/update', GuideInterestUpdateView.as_view(), name='guide-interest-update'),
+    path('user/guide/<int:guide_id>/interest/', GuideInterestView.as_view(), name='guide-interest-list'),
+    path('user/guide/<int:guide_id>/interest/<str:interest_type>/', GuideInterestTypeView.as_view(), name='guide-interest-type-list'),
+
+    path('user/expert/<int:expert_id>/interest/update/', ExpertInterestUpdateView.as_view(), name='expert-interest-update'),
+    path('user/expert/<int:expert_id>/interest/', ExpertInterestView.as_view(), name='expert-interest-list'),
+    path('user/expert/<int:expert_id>/interest/<str:interest_type>/', ExpertInterestTypeView.as_view(), name='expert-interest-type-list'),
+
 
 
 

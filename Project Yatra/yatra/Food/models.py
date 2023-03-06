@@ -6,7 +6,7 @@ from reverse_geocoding import ReverseGeocoder
 
 class Food(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     type_choices=[
         ('LOC', 'Local'),
         ('RST', 'Restaurant'),

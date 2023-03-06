@@ -9,7 +9,6 @@ class News(models.Model):
 
     date=models.DateField()
     description = models.TextField()
-    interest=models.ManyToManyField(Interest)
    
     related_keywords = models.CharField(max_length=255, null=True, blank=True)
   
@@ -29,7 +28,6 @@ class Info(models.Model):
 
     date=models.DateField()
     description = models.TextField()
-    interest=models.ManyToManyField(Interest)
    
     related_keywords = models.CharField(max_length=255, null=True, blank=True)
   

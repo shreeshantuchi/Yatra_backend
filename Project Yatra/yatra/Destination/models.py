@@ -11,7 +11,7 @@ geolocator = Nominatim(user_agent="YATRA")
 
 class Destination(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     is_area = models.BooleanField(default=False)
     average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     related_keywords = models.CharField(max_length=255, null=True, blank=True)

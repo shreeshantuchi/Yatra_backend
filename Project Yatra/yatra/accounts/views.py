@@ -271,6 +271,18 @@ class InterestView(generics.ListCreateAPIView):
     serializer_class = InterestSerializer
     queryset = Interest.objects.all()
 
+class InterestTypeView(generics.ListCreateAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class = InterestSerializer
+    
+    def get_queryset(self):
+        interest_type = self.kwargs['interest_type']
+        return Interest.objects.filter(type=interest_type)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 #replicate these parts for guide and expert
@@ -282,8 +294,21 @@ class YatriInterestView(generics.ListAPIView):
         # Get the user profile object based on the user ID in the request
         user_id = self.kwargs['yatri_id']
         yatri = Yatri.objects.get(user_id=user_id)
+        print(yatri.interests.all())
         # Return the interests associated with the user profile
         return yatri.interests.all()
+    
+class YatriInterestTypeView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=InterestSerializer
+    
+    def get_queryset(self):
+        # Get the user profile object based on the user ID in the request
+        user_id = self.kwargs['yatri_id']
+        interest_type = self.kwargs['interest_type']
+        yatri = Yatri.objects.get(user_id=user_id)
+        # Return the interests associated with the user profile
+        return yatri.interests.filter(type=interest_type)
 
 
 class YatriInterestUpdateView(generics.UpdateAPIView):
@@ -322,6 +347,17 @@ class GuideInterestView(generics.ListAPIView):
         # Return the interests associated with the user profile
         return sahayatri.interests.all()
 
+class GuideInterestTypeView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=InterestSerializer
+    
+    def get_queryset(self):
+        # Get the user profile object based on the user ID in the request
+        user_id = self.kwargs['guide_id']
+        interest_type = self.kwargs['interest_type']
+        sahayatri = SahayatriGuide.objects.get(user_id=user_id)
+        # Return the interests associated with the user profile
+        return sahayatri.interests.filter(type=interest_type)
 
 class GuideInterestUpdateView(generics.UpdateAPIView):
     serializer_class = SahayatriGuideSerializer
@@ -357,6 +393,18 @@ class ExpertInterestView(generics.ListAPIView):
         sahayatri = SahayatriExpert.objects.get(user_id=user_id)
         # Return the interests associated with the user profile
         return sahayatri.interests.all()
+    
+class ExpertInterestTypeView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=InterestSerializer
+    
+    def get_queryset(self):
+        # Get the user profile object based on the user ID in the request
+        user_id = self.kwargs['expert_id']
+        interest_type = self.kwargs['interest_type']
+        sahayatri = SahayatriExpert.objects.get(user_id=user_id)
+        # Return the interests associated with the user profile
+        return sahayatri.interests.filter(type=interest_type)
 
 
 class ExpertInterestUpdateView(generics.UpdateAPIView):

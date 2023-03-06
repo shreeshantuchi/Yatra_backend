@@ -8,7 +8,7 @@ from reverse_geocoding import ReverseGeocoder
 
 class Activity(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     type_choices=[
         ('ENT','Entertainment'),
         ('SPT','Sports'),

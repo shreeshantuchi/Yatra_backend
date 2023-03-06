@@ -88,8 +88,8 @@ class User(AbstractBaseUser):
 #Interest model
 class Interest(models.Model):
     name = models.CharField(max_length=255)
-    description = models.TextField(max_length=20,null=True)
-    related_keywords=models.CharField(max_length=200,null=True)
+    description = models.TextField(null=True,blank=True)
+    related_keywords=models.CharField(max_length=255,null=True,blank=True)
 
     type_choices =[ 
         ('DES','Destination'),
