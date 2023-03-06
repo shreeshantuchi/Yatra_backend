@@ -26,7 +26,6 @@ from .models import (
     SahayatriGuide,
     SahayatriExpert,
     Country,
-    Location,
     Language,
     Interest    
     )
@@ -42,7 +41,6 @@ from accounts.serializers import (
     SahayatriExpertSerializer,
     SahayatriGuideSerializer,
     LanguageSerializer,
-    LocationSerializer,
     CountrySerializer,
     InterestSerializer
 )
@@ -120,9 +118,7 @@ class SahayatriGuideView(generics.RetrieveUpdateAPIView):
     queryset = SahayatriGuide.objects.all()
     parser_classes=[MultiPartParser,FormParser]
 
-
 # create view for guide/expert as list view the serializer also needs to be created
-
 class SahayatriExpertView(generics.RetrieveUpdateAPIView):
     renderer_classes =[UserRenderer]
     # permission_classes=[IsAuthenticated]
@@ -136,26 +132,19 @@ class ShayatriGuideListView(generics.ListAPIView):
     serializer_class = SahayatriGuideSerializer
     queryset = SahayatriGuide.objects.all()
 
-
 class ShayatriExpertListView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
     serializer_class = SahayatriExpertSerializer
     queryset = SahayatriExpert.objects.all()
+
+
 
 class CountryView(generics.ListCreateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class = CountrySerializer
     queryset = Country.objects.all()
 
-class LocationAddView(generics.UpdateAPIView,generics.DestroyAPIView):
-    renderer_classes =[UserRenderer]
-    serializer_class = LocationSerializer
-    queryset = Location.objects.all()
 
-class LocationView(generics.ListCreateAPIView):
-    renderer_classes =[UserRenderer]
-    serializer_class = LocationSerializer
-    queryset = Location.objects.all()
 
 class LanguageView(generics.ListCreateAPIView):
     renderer_classes =[UserRenderer]
@@ -199,7 +188,6 @@ class YatriLanguageUpdateView(generics.UpdateAPIView):
         self.perform_update(serializer)
 
         return Response(serializer.data)
-
 
 # view to  view language for guide
 class GuideLanguageView(generics.ListAPIView):
@@ -275,6 +263,9 @@ class ExpertLanguageUpdateView(generics.UpdateAPIView):
 
         return Response(serializer.data)
 
+
+
+
 class InterestView(generics.ListCreateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class = InterestSerializer
@@ -318,12 +309,74 @@ class YatriInterestUpdateView(generics.UpdateAPIView):
         self.perform_update(serializer)
 
         return Response(serializer.data)
-# To return list
-# class DestinationListView(generics.ListCreateAPIView):
-#     queryset = Destination.objects.all()
-#     serializer_class = DestinationSerializer
+    
+# interest view and interest update view for guides
+class GuideInterestView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=InterestSerializer
+    
+    def get_queryset(self):
+        # Get the user profile object based on the user ID in the request
+        user_id = self.kwargs['guide_id']
+        sahayatri = SahayatriGuide.objects.get(user_id=user_id)
+        # Return the interests associated with the user profile
+        return sahayatri.interests.all()
 
-# urls
-# path("destination/", DestinationListView.as_view(), name='destination-list')
+
+class GuideInterestUpdateView(generics.UpdateAPIView):
+    serializer_class = SahayatriGuideSerializer
+    # permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        yatri_id = self.kwargs.get('guide_id')
+        return get_object_or_404(SahayatriGuide, pk=yatri_id)
+    
+    def update(self, request, *args, **kwargs):
+        sahayatri = self.get_object()
+        interest_ids = request.data.get('interests', [])
+
+        interests = Interest.objects.filter(id__in=interest_ids)
+       
+        sahayatri.interests.set(interests)
+
+        serializer = self.get_serializer(sahayatri, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)
 
 
+# interest view and interest update view for experts
+class ExpertInterestView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=InterestSerializer
+    
+    def get_queryset(self):
+        # Get the user profile object based on the user ID in the request
+        user_id = self.kwargs['expert_id']
+        sahayatri = SahayatriExpert.objects.get(user_id=user_id)
+        # Return the interests associated with the user profile
+        return sahayatri.interests.all()
+
+
+class ExpertInterestUpdateView(generics.UpdateAPIView):
+    serializer_class = SahayatriExpertSerializer
+    # permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        yatri_id = self.kwargs.get('expert_id')
+        return get_object_or_404(SahayatriExpert, pk=yatri_id)
+    
+    def update(self, request, *args, **kwargs):
+        sahayatri = self.get_object()
+        interest_ids = request.data.get('interests', [])
+
+        interests = Interest.objects.filter(id__in=interest_ids)
+       
+        sahayatri.interests.set(interests)
+
+        serializer = self.get_serializer(sahayatri, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User,Yatri,Country,Interest,Location,Language,SahayatriExpert,SahayatriGuide
+from accounts.models import User,Yatri,Country,Interest,Language,SahayatriExpert,SahayatriGuide
 from django.db import models
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -137,16 +137,6 @@ class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language
         fields = '__all__'
-
-
-
-
-#this is the serrializer for the location
-class LocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Location
-        fields = '__all__'
-
 
 #this is the serrializer for the Country
 class CountrySerializer(serializers.ModelSerializer):

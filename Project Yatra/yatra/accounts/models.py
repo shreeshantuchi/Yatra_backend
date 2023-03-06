@@ -118,25 +118,6 @@ class Country(models.Model):
     def __str__(self):
         return self.name+f'({self.short_name})'
 
-#location model store latitue and lgoitude
-#name is reverse gerated from the long and lat
-class Location(models.Model):
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
-    # name = models.CharField(max_length=200, blank=True)
-    
-
-    def __str__(self):
-        return str([self.longitude,self.latitude])
-
-    # def save(self, *args, **kwargs):
-    #     if not self.name:
-    #         geolocator = Nominatim(user_agent='myapp')
-    #         location = geolocator.reverse(f"{self.latitude}, {self.longitude}")
-    #         self.name = location.address
-    #     super().save(*args, **kwargs)
-
-
 class Language(models.Model):
     name = models.CharField(max_length=200)
     short_name=models.CharField(max_length=30)
