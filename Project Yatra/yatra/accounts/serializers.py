@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User,Yatri,Country,Interest,Language,SahayatriExpert,SahayatriGuide
+from accounts.models import User,Yatri,Country,Interest,Language,SahayatriExpert,SahayatriGuide,PoliceStation,SOSRequest
 from django.db import models
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -158,3 +158,31 @@ class YatriInterestSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
+
+#for SOS Systems
+class YatriSOSSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Yatri
+        fields = ['first_name', 'last_name', 'age', 'country', 'phone_no', 'latitude', 'longitude', 'updated_at']
+
+
+
+class PoliceStationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= PoliceStation
+        fields='__all__'
+
+
+class SOSRequestListSerializer(serializers.ModelSerializer):
+    yatri = YatriSOSSerializer()
+    police_station=PoliceStationSerializer()
+    class Meta:
+        model=SOSRequest
+        fields=['yatri','police_station','timestamp','is_active','status']
+
+
+class SOSRequestCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=SOSRequest
+        fields=['yatri','police_station','timestamp']

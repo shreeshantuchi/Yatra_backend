@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from accounts.models import User,Yatri,Country,Interest,SahayatriExpert,SahayatriGuide,Language
+from accounts.models import User,Yatri,Country,Interest,SahayatriExpert,SahayatriGuide,Language,SOSRequest,PoliceStation
 
 class UserModelAdmin(BaseUserAdmin):
 
@@ -36,6 +36,9 @@ admin.site.register(SahayatriExpert)
 admin.site.register(Country)
 admin.site.register(Interest)
 admin.site.register(Language)
+
+admin.site.register(PoliceStation)
+admin.site.register(SOSRequest)
 
 
 

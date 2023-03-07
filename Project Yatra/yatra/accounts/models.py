@@ -144,12 +144,12 @@ class Yatri(models.Model):
     age = models.PositiveIntegerField(null=True)
     country = models.ForeignKey(Country, blank=True,null=True,on_delete=models.SET_NULL)
     phone_no=models.CharField(max_length=20,null=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
+    latitude = models.DecimalField(max_digits=20, decimal_places=15,blank=True,null=True)
+    longitude = models.DecimalField(max_digits=20, decimal_places=15,blank=True,null=True)
     
     
     interests=models.ManyToManyField(Interest,related_name='interest_yatri')
-    languages=models.ManyToManyField(Language)
+    languages=models.ManyToManyField(Language,related_name='languages_yatri')
 
 
 
@@ -234,8 +234,8 @@ class SahayatriExpert(models.Model):
     age = models.PositiveIntegerField(null=True,blank=True)
     country = models.ForeignKey(Country, null=True, on_delete=models.SET_NULL)
     phone_no=models.CharField(max_length=20,null=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6,blank=True,null=True)
+    latitude = models.DecimalField(max_digits=20, decimal_places=15,blank=True,null=True)
+    longitude = models.DecimalField(max_digits=20, decimal_places=15,blank=True,null=True)
     
 
     interests=models.ManyToManyField(Interest,related_name='interest_sahayatri')
@@ -278,3 +278,32 @@ class SahayatriExpert(models.Model):
     
     def __str__(self):
         return str(self.user.email)
+    
+
+
+#for the sos system
+
+#1. model for the police station
+class PoliceStation(models.Model):
+    name=models.CharField(max_length=255,unique=True)
+    phone_no=models.CharField(max_length=20)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+
+
+
+    def __str__(self):
+        return self.name
+    
+    
+
+#2. for SOS Request
+class SOSRequest(models.Model):
+    yatri = models.ForeignKey(Yatri, on_delete=models.CASCADE,related_name='sosrequestyatri')
+    police_station=models.ForeignKey(PoliceStation, on_delete=models.CASCADE,related_name='sosrequest')
+    timestamp = models.DateTimeField(auto_now_add=True)
+    status=models.CharField(max_length=10,choices=[('SOL','Solved'),('WAT','Wating'),('INI','Initiated')],default='WAT')
+    is_active=models.BooleanField(default=True)
+
+    def __str__(self):
+        return str(self.timestamp)

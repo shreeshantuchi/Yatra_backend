@@ -27,7 +27,13 @@ from accounts.views import (
     GuideLanguageUpdateView,
     GuideLanguageView,
     ExpertLanguageUpdateView,
-    ExpertLanguageView
+    ExpertLanguageView,
+
+    SOSRequestCreateView,
+    SOSRequestListView,
+    SOSRequestActiveListView,
+    SOSRequestStatusListView,
+    PoliceStationList
 )
 
 
@@ -85,5 +91,10 @@ urlpatterns = [
     path('user/expert/<int:expert_id>/language/list/', ExpertLanguageView.as_view(), name='expert-language-list'),
 
 
+    path('user/yatri/<int:yatri_id>/sos/',SOSRequestCreateView.as_view(),name='sos-create'),
+    path('sos/',SOSRequestListView.as_view(),name='sos-requests'),
+    path('sos/active/',SOSRequestActiveListView.as_view(),name='sos-requests'),
+    path('sos/<str:status>/<str:view>/',SOSRequestStatusListView.as_view(),name='sos-requests'),
+    path('policestation/',PoliceStationList.as_view(),name='policestations')
 
 ]

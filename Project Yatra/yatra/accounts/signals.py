@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save,post_delete
 from django.dispatch import receiver
 
-from .models import Yatri, User,SahayatriExpert,SahayatriGuide
+from .models import Yatri, User,SahayatriExpert,SahayatriGuide,SOSRequest
 
 
 @receiver(post_save, sender=User)
@@ -24,3 +24,8 @@ def delete_user_when_profile_deleted(sender, instance, **kwargs):
         user.delete()
     except User.DoesNotExist:
         pass
+
+@receiver(post_save,sender=SOSRequest)
+def check_sos_status(sender, instance, **kwargs):
+    if instance.status=='SOL':
+        SOSRequest.objects.filter(pk=instance.pk).update(is_active=False)

@@ -8,6 +8,10 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import generics
 
+
+import math 
+
+
 #for generating token
 from rest_framework_simplejwt.tokens import RefreshToken
 def get_tokens_for_user(user):
@@ -27,7 +31,9 @@ from .models import (
     SahayatriExpert,
     Country,
     Language,
-    Interest    
+    Interest,
+    PoliceStation,
+    SOSRequest    
     )
 
 
@@ -42,7 +48,11 @@ from accounts.serializers import (
     SahayatriGuideSerializer,
     LanguageSerializer,
     CountrySerializer,
-    InterestSerializer
+    InterestSerializer,
+    PoliceStationSerializer,
+    SOSRequestCreateSerializer,
+    SOSRequestListSerializer,
+    YatriSOSSerializer
 )
 
 class UserRegistrationView(APIView):
@@ -428,3 +438,97 @@ class ExpertInterestUpdateView(generics.UpdateAPIView):
         self.perform_update(serializer)
 
         return Response(serializer.data)
+
+
+
+class PoliceStationList(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    queryset=PoliceStation.objects.all()
+    serializer_class=PoliceStationSerializer
+
+class SOSRequestCreateView(generics.CreateAPIView):
+    serializer_class=SOSRequestCreateSerializer
+
+    def haversine(self,lat1, lon1, lat2, lon2):
+     
+        # distance between latitudes
+        # and longitudes
+        dLat = float(lat2 - lat1) * math.pi / 180.0
+        dLon = float(lon2 - lon1) * math.pi / 180.0
+    
+        # convert to radians
+        lat1 = float(lat1) * math.pi / 180.0
+        lat2 = float(lat2) * math.pi / 180.0
+    
+        # apply formulae
+        a = (pow(math.sin(dLat / 2), 2) +
+            pow(math.sin(dLon / 2), 2) *
+                math.cos(lat1) * math.cos(lat2))
+        rad = 6371
+        c = 2 * math.asin(math.sqrt(a))
+        return rad * c
+
+    def get_object(self):
+        yatri_id = self.kwargs.get('yatri_id')
+        try:
+            yatri = Yatri.objects.get(pk=yatri_id)
+        except Yatri.DoesNotExist:
+            return Response({'error': 'Yatri not found.'}, status=status.HTTP_404_NOT_FOUND)
+        return yatri
+    
+    def create(self, request, *args, **kwargs):
+        # Get user location from request data
+        yatri_id = self.kwargs.get('yatri_id')
+        try:
+            yatri = Yatri.objects.get(pk=yatri_id)
+        except Yatri.DoesNotExist:
+            return Response({'error': 'Yatri not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if SOSRequest.objects.filter(yatri=yatri.pk, is_active=True).exists():
+            return Response({'error': 'You already have an active SOS request.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        
+        police_stations = PoliceStation.objects.all()
+        distances = []
+        for station in police_stations:
+            dist = self.haversine(yatri.latitude, yatri.longitude, station.latitude, station.longitude)
+            distances.append((dist, station))
+    
+        # Sort police stations by distance
+        distances.sort(key=lambda x: x[0])
+
+        # Create SOS request object and return response
+        request.data['yatri']=yatri.pk
+        request.data['police_station'] = distances[0][1].pk
+        sos_serializer = self.get_serializer(data=request.data)
+        if sos_serializer.is_valid():
+            sos_serializer.save()
+            return Response(sos_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(sos_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SOSRequestListView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    queryset=SOSRequest.objects.all()
+    serializer_class=SOSRequestListSerializer
+
+class SOSRequestActiveListView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=SOSRequestListSerializer
+    def get_queryset(self):
+        sosrequest=SOSRequest.objects.all()
+        return sosrequest.filter(is_active=True)
+    
+class SOSRequestStatusListView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class=SOSRequestListSerializer
+    def get_queryset(self):
+        view = self.kwargs['view']
+        status_type = self.kwargs['status']
+        sosrequest = SOSRequest.objects.filter(status=status_type)
+        # Return the interests associated with the user profile
+        if view == 'active':
+            return sosrequest.filter(is_active=True)
+        else:
+            return sosrequest
