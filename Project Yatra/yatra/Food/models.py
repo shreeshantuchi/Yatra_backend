@@ -38,17 +38,20 @@ class Food(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
-        if not self.location:
-            time.sleep(2)
-            reverse_gecoder = ReverseGeocoder()
-            if not self.latitude and not self.longitude:
-                location_got = reverse_gecoder.get_address(self.destination.latitude,self.destination.longitude)
-            else:
-                location_got = reverse_gecoder.get_address(self.latitude,self.longitude)
-            self.location = location_got
-            print(location_got)
-            print('location saved')
-        super().save(*args, **kwargs)
+        try:
+            if not self.location:
+                time.sleep(2)
+                reverse_gecoder = ReverseGeocoder()
+                if not self.latitude and not self.longitude:
+                    location_got = reverse_gecoder.get_address(self.destination.latitude,self.destination.longitude)
+                else:
+                    location_got = reverse_gecoder.get_address(self.latitude,self.longitude)
+                self.location = location_got
+                print(location_got)
+                print('location saved')
+            super().save(*args, **kwargs)
+        except:
+            pass
 
 
 class FoodImage(models.Model):
