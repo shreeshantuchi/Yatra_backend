@@ -14,4 +14,4 @@ class DestinationSerializer(serializers.ModelSerializer):
     activity=ActivitySerializer(many=True,read_only=True)
     class Meta:
         model = Destination
-        fields =['id','name','description','is_area','average_price','related_keywords','latitude','longitude','images','activity']
+        fields =['id','name','description','is_area','average_price','related_keywords','latitude','longitude','location','images','activity']
