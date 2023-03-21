@@ -1,4 +1,8 @@
 from django.db import models
+from django.contrib.contenttypes.fields import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
+
+
 import os
 from django.core.exceptions import ValidationError
 from django.db.models import Q
@@ -7,9 +11,11 @@ from geopy.geocoders import Nominatim
 
 from reverse_geocoding import ReverseGeocoder
 
+
 geolocator = Nominatim(user_agent="YATRA")
 
 class Destination(models.Model):
+
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     is_area = models.BooleanField(default=False)
@@ -20,7 +26,7 @@ class Destination(models.Model):
     location= models.CharField(max_length=255,blank=True,null=True)
 
 
-
+    
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
     
@@ -34,6 +40,8 @@ class Destination(models.Model):
             location_got = reverse_gecoder.get_address(self.latitude, self.longitude)
             self.location = location_got
         super().save(*args, **kwargs)
+
+    
     
 
 

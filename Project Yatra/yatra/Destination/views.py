@@ -20,6 +20,8 @@ from Activites.models import Activity
 from Food.serializers import FoodSerializer
 from Food.models import Food
 
+
+
 class DestinationCreateView(generics.CreateAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= DestinationSerializer
@@ -75,3 +77,7 @@ class FoodListView(generics.ListAPIView):
         destination_id = self.kwargs.get('destination_id')
         print(destination_id)
         return Food.objects.filter(destination__id=destination_id)
+    
+
+
+#for the likes

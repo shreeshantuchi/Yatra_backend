@@ -186,3 +186,6 @@ class SOSRequestCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model=SOSRequest
         fields=['yatri','police_station','timestamp']
+
+
+

@@ -9,7 +9,6 @@ import os
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
-from Destination.models import Destination
 
 
 #Custom user manager class
@@ -163,6 +162,8 @@ class Yatri(models.Model):
 
 
 class SahayatriGuide(models.Model):
+    from Destination.models import Destination
+
     def nameFile(instance,filename):
         full_name = f"{instance.first_name or ''}{instance.last_name or ''}"
         return f"shayatriimages/guide/{full_name}/{filename}"
@@ -307,3 +308,5 @@ class SOSRequest(models.Model):
 
     def __str__(self):
         return str(self.timestamp)
+    
+#for the likes feature
