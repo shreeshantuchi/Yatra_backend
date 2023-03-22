@@ -6,6 +6,8 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from django.shortcuts import get_object_or_404
 import base64
 from django.core.files.base import ContentFile
+from django.db.models import Case, When
+
 
 
 
@@ -20,6 +22,8 @@ from Activites.models import Activity
 from Food.serializers import FoodSerializer
 from Food.models import Food
 
+from accounts.models import Yatri,Interest
+import destinationrecomender
 
 
 class DestinationCreateView(generics.CreateAPIView):
@@ -78,6 +82,46 @@ class FoodListView(generics.ListAPIView):
         print(destination_id)
         return Food.objects.filter(destination__id=destination_id)
     
+class DestinationRecomendedListView(generics.ListAPIView):
+    renderer_classes =[UserRenderer]
+    serializer_class= DestinationSerializer
+    
+    def get_queryset(self):
+        # Get the user ID from the URL
+        user_id = self.kwargs['user_id']
 
+        # Get the user's location from the User model
+        user = Yatri.objects.get(pk=user_id)
+        user_location = user.get_address()
+
+        # Get the user's interests from the query parameters
+        user_interests = user.interests.all()
+        lst=user_interests[0:]
+        names=[]
+        for item in lst:
+            if item.type =='DES':
+                names.append(item.name)
+        print(names)
+        # for interest in user_interests:
+        #     Type,name=user_interests.split('/')
+        #     print(Type,name)
+        related_keywords_qs = Interest.objects.filter(name__in=names,type='DES').values_list('related_keywords', flat=True)
+        
+        #converting to string
+        related_keywords = ','.join(related_keywords_qs)
+        
+        # Call the recommender function to get a list of recommended food IDs
+        recommended_destination_ids = destinationrecomender.destinationrecomendation(user_location, related_keywords)
+        
+        # print(related_keywords)
+        # print(user_location)
+
+        recommended_destination_ids=[x+1 for x in recommended_destination_ids]
+        # Query the database for the recommended food items, in the order returned by the recommender function
+        queryset = Destination.objects.filter(id__in=recommended_destination_ids).order_by(
+            Case(*[When(id=id, then=pos) for pos, id in enumerate(recommended_destination_ids)])
+        )
+
+        return queryset
 
 #for the likes

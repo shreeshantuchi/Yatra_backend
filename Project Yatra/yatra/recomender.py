@@ -95,7 +95,7 @@ def vectorize(data_food):
 
 
 def get_recommendations(user_location, user_interest,data_food):
-    kewywords_matrix=vectorize(data_food)
+    keywords_matrix=vectorize(data_food)
     # Clean and stem user input
     user_interest = stem(user_interest)
     
@@ -114,7 +114,7 @@ def get_recommendations(user_location, user_interest,data_food):
     query_interest_vec = vstack(keyword_vecs).sum(axis=0)
     
     # Compute cosine similarity between user interests and keywords in the dataset
-    cosine_sim_interest = cosine_similarity(np.asarray(query_interest_vec), kewywords_matrix)
+    cosine_sim_interest = cosine_similarity(np.asarray(query_interest_vec), keywords_matrix)
     # print('cosine sim interest',cosine_sim_interest)
 
     # Normalize cosine similarity scores
@@ -171,7 +171,7 @@ def get_recommendations(user_location, user_interest,data_food):
 # print('printing recomendations')
 # print(recomendations)
 
-def startrecomendation(location,interest):
+def foodrecomendation(location,interest):
     data_food=buildDataFrame()
     indexs=get_recommendations(location,interest,data_food)
     print(data_food.iloc[indexs])
