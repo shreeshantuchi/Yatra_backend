@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser,FormParser
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
 from rest_framework import generics
 
@@ -532,3 +533,14 @@ class SOSRequestStatusListView(generics.ListAPIView):
             return sosrequest.filter(is_active=True)
         else:
             return sosrequest
+        
+
+class YatriLocationView(APIView):
+    def get(self, request, yatri_id, format=None):
+        yatri = get_object_or_404(Yatri, pk=yatri_id)
+        address = yatri.get_address()
+        if address:
+            data = {'latitude': yatri.latitude, 'longitude': yatri.longitude, 'location': address}
+            return Response(data)
+        
+        return Response({'error': 'Location not found'}, status=status.HTTP_404_NOT_FOUND)

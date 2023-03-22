@@ -8,6 +8,7 @@ import os
 
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from reverse_geocoding import ReverseGeocoder
 
 
 
@@ -104,6 +105,9 @@ class Interest(models.Model):
     
     def __str__(self):
         return self.type+"/"+self.name
+    
+    # def getName(self):
+    #     return self.name
 
 
 
@@ -145,6 +149,8 @@ class Yatri(models.Model):
     phone_no=models.CharField(max_length=20,null=True)
     latitude = models.DecimalField(max_digits=20, decimal_places=15,blank=True,null=True)
     longitude = models.DecimalField(max_digits=20, decimal_places=15,blank=True,null=True)
+
+    
     
     
     interests=models.ManyToManyField(Interest,related_name='interest_yatri')
@@ -158,6 +164,12 @@ class Yatri(models.Model):
     
     def __str__(self):
         return str(self.user.email)
+    
+    def get_address(self):
+        reverse_gecoder = ReverseGeocoder()
+        location_got = reverse_gecoder.get_address(self.latitude, self.longitude)
+        location = location_got
+        return location if location else "Nepal"
     
 
 

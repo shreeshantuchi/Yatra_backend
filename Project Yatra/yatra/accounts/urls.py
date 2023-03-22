@@ -33,7 +33,8 @@ from accounts.views import (
     SOSRequestListView,
     SOSRequestActiveListView,
     SOSRequestStatusListView,
-    PoliceStationList
+    PoliceStationList,
+    YatriLocationView
 )
 
 
@@ -67,7 +68,7 @@ urlpatterns = [
     path('user/yatri/<int:yatri_id>/interest/update/', YatriInterestUpdateView.as_view(), name='yatri-interest-update'),
     path('user/yatri/<int:yatri_id>/interest/', YatriInterestView.as_view(), name='yatri-interest-list'),
     path('user/yatri/<int:yatri_id>/interest/<str:interest_type>/', YatriInterestTypeView.as_view(), name='yatri-interest-type-list'),
-
+    path('user/yatri/<int:yatri_id>/location/', YatriLocationView.as_view(),name='yatri-location'),
 
     path('user/guide/<int:guide_id>/interest/update', GuideInterestUpdateView.as_view(), name='guide-interest-update'),
     path('user/guide/<int:guide_id>/interest/', GuideInterestView.as_view(), name='guide-interest-list'),
