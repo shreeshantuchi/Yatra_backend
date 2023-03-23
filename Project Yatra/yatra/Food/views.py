@@ -8,7 +8,7 @@ from .serializers import FoodSerializer,FoodImageSerializer
 from Food.models import Food,FoodImage
 from accounts.rendererss import UserRenderer
 from accounts.models import Yatri,Interest
-import recomender
+import foodrecomender
 
 class FoodCreateView(generics.CreateAPIView):
     renderer_classes =[UserRenderer]
