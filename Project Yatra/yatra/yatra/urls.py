@@ -17,6 +17,10 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.core.management import call_command
+import populate.management.commands.getnewsfromapi 
+
+call_command('getnewsfromapi')
 
 
 urlpatterns = [

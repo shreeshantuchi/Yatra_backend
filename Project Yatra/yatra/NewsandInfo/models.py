@@ -6,6 +6,7 @@ class News(models.Model):
     topic = models.CharField(max_length=100)
     source_name=models.CharField(max_length=200)
     source_link=models.URLField(null=True,blank=True)
+    image_url=models.URLField(null=True,blank=True)
 
     date=models.DateField()
     description = models.TextField()
@@ -43,7 +44,7 @@ class Info(models.Model):
 class NewsImage(models.Model):
     def nameFile(instance,filename):
         full_name = f"{instance.news.name or ''}"
-        return f"Destination/{full_name}/{filename}"
+        return f"NewsImage/{full_name}/{filename}"
      
     news = models.ForeignKey(News, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=nameFile)
@@ -58,7 +59,7 @@ class NewsImage(models.Model):
 class InfoImage(models.Model):
     def nameFile(instance,filename):
         full_name = f"{instance.info.name or ''}"
-        return f"Destination/{full_name}/{filename}"
+        return f"InfoImage/{full_name}/{filename}"
      
     info = models.ForeignKey(Info, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to=nameFile)

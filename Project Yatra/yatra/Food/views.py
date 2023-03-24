@@ -65,7 +65,7 @@ class FoodRecomendedListView(generics.ListAPIView):
         related_keywords = ','.join(related_keywords_qs)
         
         # Call the recommender function to get a list of recommended food IDs
-        recommended_food_ids = recomender.foodrecomendation(user_location, related_keywords)
+        recommended_food_ids = foodrecomender.foodrecomendation(user_location, related_keywords)
         
         # print(related_keywords)
         # print(user_location)
