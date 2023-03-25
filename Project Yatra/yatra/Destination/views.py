@@ -90,6 +90,7 @@ class DestinationRecomendedListView(generics.ListAPIView):
         context = super().get_serializer_context()
         context['request'] = self.request
         context['user_id'] = self.kwargs['user_id']  # or however you get the user ID
+        print('activated')
         return context
     
     def get_queryset(self):
@@ -144,6 +145,6 @@ class DestinationFavoritesView(generics.GenericAPIView):
     def delete(self, request, *args, **kwargs):
         user_id = self.kwargs['user_id']
         user = Yatri.objects.get(pk=user_id)
-        destination = generics.get_object_or_404(Food, pk=self.kwargs['destination_id'])
+        destination = generics.get_object_or_404(Destination, pk=self.kwargs['destination_id'])
         destination.favorite_by.remove(user)
         return Response(status=204)

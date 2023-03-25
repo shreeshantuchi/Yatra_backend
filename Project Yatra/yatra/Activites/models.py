@@ -26,6 +26,7 @@ class Activity(models.Model):
     longitude = models.DecimalField(max_digits=20, decimal_places=15,null=True,blank=True)
     destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='activity', null=True, blank=True)
     location= models.CharField(max_length=255,blank=True,null=True)
+    favorite_by=models.ManyToManyField('accounts.Yatri',related_name='favorite_activity',blank=True,default=None)
 
 
     created_at=models.DateTimeField(auto_now_add=True)
