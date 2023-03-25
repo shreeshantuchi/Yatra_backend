@@ -26,6 +26,7 @@ class Food(models.Model):
     type= MultiSelectField(max_length=50,choices=type_choices,default='OTH')
     phone_no=models.CharField(max_length=20,null=True,blank=True)
     average_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    ratings = models.DecimalField(max_digits=2, decimal_places=1, default=3.0)
     related_keywords = models.CharField(max_length=255, null=True, blank=True)
     latitude = models.DecimalField(max_digits=20, decimal_places=15,null=True)
     longitude = models.DecimalField(max_digits=20, decimal_places=15,null=True)

@@ -64,6 +64,7 @@ def buildDataFrame():
     keywords=[]
     index=[]
     description=[]
+    ratings=[]
 
     for destination in destinations:
         name.append(destination.name)
@@ -72,12 +73,13 @@ def buildDataFrame():
         keywords.append(destination.related_keywords)
         description.append(destination.description)
         index.append(destination.id)
+        ratings.append(destination.ratings)
     
         print(destination.location)
     # for i in range(1,len(name)):
     #     print(name[i], address[i],average_price[i],keywords[i])
 
-    new_dict={'Name':name,'Location':address,'AvgPrice':average_price,'Description':description,'Keywords':keywords,'Index':index}
+    new_dict={'Name':name,'Location':address,'AvgPrice':average_price,'Description':description,'Keywords':keywords,'Index':index,'Ratings':ratings}
 
     data_destination=pd.DataFrame(new_dict)
     
@@ -165,10 +167,82 @@ def get_recommendations(user_location, user_interest,data_destination):
     return results.index
 
 
+def get_popular_recommendations(user_location, user_interest,data_destination):
+    keywords_matrix=vectorize(data_destination)
+    # Clean and stem user input
+    user_interest = stem(user_interest)
+    
+    # Split user interest into individual keywords
+    user_interest_list = user_interest.split(",")
+    
+    # Initialize empty list for keyword vectors
+    keyword_vecs = []
+    
+    # Loop through each keyword, vectorize it, and append to keyword_vecs list
+    for keyword in user_interest_list:
+        keyword_vec = vectorizer.transform([stem(keyword)])
+        keyword_vecs.append(keyword_vec)
+    
+    # Sum the keyword vectors to get a single vector for the user's input
+    query_interest_vec = vstack(keyword_vecs).sum(axis=0)
+    
+    # Compute cosine similarity between user interests and keywords in the dataset
+    cosine_sim_interest = cosine_similarity(np.asarray(query_interest_vec), keywords_matrix)
+    print(cosine_sim_interest)
+    # Normalize cosine similarity scores
+    cosine_sim_interest_norm = cosine_sim_interest / cosine_sim_interest.max()
+    print(cosine_sim_interest_norm)
+    
+    
+    if 'kathmandu' in user_location.lower():
+        user_location='Kathmandu'
+    if 'lalitpur' in user_location.lower():
+        user_location='Lalitpur'
+    if 'bhaktapur' in user_location.lower():
+        user_location='Bhaktapur'
+
+    # Compute location similarity between user location and locations in the dataset
+    location_similarities = data_destination['Location'].apply(lambda x: 1 if user_location.lower() in x else 0)
+    review_score=data_destination['Ratings'].apply(lambda x: float(x))
+    # Normalize location similarity scores
+    location_similarities_norm = location_similarities * 1.0 / location_similarities.max()
+    location_similarities_norm = location_similarities_norm.values.reshape(1, -1)
+
+    review_norm = review_score * 1.0 / review_score.max()
+    review_norm = review_norm.values.reshape(1, -1)
+
+    print(location_similarities)
+    # Combine the two similarity scores using a weighted sum
+    # You can adjust the weights to give more importance to one score over the other
+    
+    combined_similarities = 0.1 * cosine_sim_interest_norm + 0.4 * location_similarities_norm+ 0.5 * review_norm
+    
+    # Get the indices of the top N recommendations
+    top_n_indices = np.argsort(-combined_similarities[0])    
+
+    # Get the similarity scores for the top N recommendations
+    similarity_scores = combined_similarities[0][top_n_indices]
+    print("Similarity Scores:", similarity_scores)    
+    
+    # Get the top N recommendations and add the similarity scores
+    results = data_destination.iloc[top_n_indices]    
+    results = results.copy()
+    results['score'] = similarity_scores
+    results['id']= top_n_indices
+    
+    return results.index
+
+
 
 def destinationrecomendation(location,interest):
     data=buildDataFrame()
     indexs=get_recommendations(location,interest,data)
+    print(data.iloc[indexs])
+    return indexs
+
+def destinationpopular(location,interest):
+    data=buildDataFrame()
+    indexs=get_popular_recommendations(location,interest,data)
     print(data.iloc[indexs])
     return indexs
 

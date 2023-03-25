@@ -14,7 +14,7 @@ class FoodSerializer(serializers.ModelSerializer):
     images =FoodImageSerializer(many=True,read_only=True)
     class Meta:
         model = Food
-        fields =('id','name','description','is_favorite','type','phone_no','location','average_price','related_keywords','latitude','longitude','images')
+        fields =('id','name','description','is_favorite','ratings','type','phone_no','location','average_price','related_keywords','latitude','longitude','images')
 
     def get_is_favorite(self,obj):
         user_id = self.context.get('user_id')
