@@ -85,6 +85,12 @@ class FoodListView(generics.ListAPIView):
 class DestinationRecomendedListView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= DestinationSerializer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        context['user_id'] = self.kwargs['user_id']  # or however you get the user ID
+        return context
     
     def get_queryset(self):
         # Get the user ID from the URL
@@ -125,3 +131,19 @@ class DestinationRecomendedListView(generics.ListAPIView):
         return queryset
 
 #for the likes
+class DestinationFavoritesView(generics.GenericAPIView):
+    serializer_class = DestinationSerializer
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = Yatri.objects.get(pk=self.kwargs['user_id'])
+        destination = generics.get_object_or_404(Destination, pk=self.kwargs['destination_id'])
+        destination.favorite_by.add(user)
+        return Response(self.serializer_class(destination).data)
+
+    def delete(self, request, *args, **kwargs):
+        user_id = self.kwargs['user_id']
+        user = Yatri.objects.get(pk=user_id)
+        destination = generics.get_object_or_404(Food, pk=self.kwargs['destination_id'])
+        destination.favorite_by.remove(user)
+        return Response(status=204)

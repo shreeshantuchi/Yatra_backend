@@ -5,7 +5,8 @@ FoodListView,
 FoodUpdateView,
 FoodDetailView,
 FoodImageCreateView,
-FoodRecomendedListView)
+FoodRecomendedListView,
+FoodFavoritesView)
 
 urlpatterns = [
     path('create/',FoodCreateView.as_view(),name="food_create"),
@@ -14,6 +15,8 @@ urlpatterns = [
     path('list/',FoodListView.as_view(),name="food_list"),
     path('<int:pk>/image/create/', FoodImageCreateView.as_view(), name='food-image-create'),
     path('list/<int:user_id>/',FoodRecomendedListView.as_view(),name="food_recommend"),
+    path('<int:food_id>/favorite/user=<int:user_id>/', FoodFavoritesView.as_view(), name='food-favorites'),
+
 
 ]
 

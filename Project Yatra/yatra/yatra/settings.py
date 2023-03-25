@@ -45,13 +45,12 @@ INSTALLED_APPS = [
      'rest_framework_simplejwt', #for user auth
      "corsheaders", #to solve some error
      'django_extensions',
-
-     'accounts',
      'Destination',
      'Food',
      'Activites',
      'NewsandInfo',
-     'populate'
+     'populate',
+     'accounts'
 ]
 
 MIDDLEWARE = [

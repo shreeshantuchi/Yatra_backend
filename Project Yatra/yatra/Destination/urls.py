@@ -7,7 +7,8 @@ from Destination.views import (
     DestinationImageCreateView,
     ActivityListView,
     FoodListView,
-    DestinationRecomendedListView
+    DestinationRecomendedListView,
+    DestinationFavoritesView
 )
 
 
@@ -22,5 +23,6 @@ urlpatterns = [
     path('<int:pk>/image/create/', DestinationImageCreateView.as_view(), name='destination-image-create'),
     path('<int:destination_id>/activity/',ActivityListView.as_view(),name="destination-activity_list"),
     path('<int:destination_id>/food/',FoodListView.as_view(),name="destination-food_list"),
+    path('<int:destination_id>/favorite/user=<int:user_id>/', DestinationFavoritesView.as_view(), name='destination-favorites'),
 
 ]

@@ -152,7 +152,6 @@ class Yatri(models.Model):
 
     
     
-    
     interests=models.ManyToManyField(Interest,related_name='interest_yatri')
     languages=models.ManyToManyField(Language,related_name='languages_yatri')
 
@@ -161,7 +160,6 @@ class Yatri(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
-    
     def __str__(self):
         return str(self.user.email)
     

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser,FormParser
 from django.db.models import Case, When
-
+from rest_framework.response import Response
 
 from .serializers import FoodSerializer,FoodImageSerializer
 from Food.models import Food,FoodImage
@@ -24,6 +24,7 @@ class FoodListView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= FoodSerializer
     queryset= Food.objects.all()
+    
 
 class FoodDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class= FoodSerializer
@@ -40,6 +41,12 @@ class FoodRecomendedListView(generics.ListAPIView):
     renderer_classes =[UserRenderer]
     serializer_class= FoodSerializer
     
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        context['user_id'] = self.kwargs['user_id']  # or however you get the user ID
+        return context
+
     def get_queryset(self):
         # Get the user ID from the URL
         user_id = self.kwargs['user_id']
@@ -77,3 +84,22 @@ class FoodRecomendedListView(generics.ListAPIView):
         )
 
         return queryset
+    
+    
+    
+class FoodFavoritesView(generics.GenericAPIView):
+    serializer_class = FoodSerializer
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = Yatri.objects.get(pk=self.kwargs['user_id'])
+        food = generics.get_object_or_404(Food, pk=self.kwargs['food_id'])
+        food.favorite_by.add(user)
+        return Response(self.serializer_class(food).data)
+
+    def delete(self, request, *args, **kwargs):
+        user_id = self.kwargs['user_id']
+        user = Yatri.objects.get(pk=user_id)
+        food = generics.get_object_or_404(Food, pk=self.kwargs['food_id'])
+        food.favorite_by.remove(user)
+        return Response(status=204)

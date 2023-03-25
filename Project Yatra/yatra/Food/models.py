@@ -3,6 +3,7 @@ import os,time
 from multiselectfield import MultiSelectField
 from Destination.models import Destination
 from reverse_geocoding import ReverseGeocoder
+from accounts.models import Yatri
 
 class Food(models.Model):
     name = models.CharField(max_length=100)
@@ -30,6 +31,7 @@ class Food(models.Model):
     longitude = models.DecimalField(max_digits=20, decimal_places=15,null=True)
     destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='food', null=True, blank=True)
     location= models.CharField(max_length=255,blank=True,null=True)
+    favorite_by=models.ManyToManyField(Yatri,related_name='favorite_food',blank=True,default=None)
 
 
     created_at=models.DateTimeField(auto_now_add=True)
