@@ -215,7 +215,7 @@ def get_popular_recommendations(user_location, user_interest,data_destination):
     # Combine the two similarity scores using a weighted sum
     # You can adjust the weights to give more importance to one score over the other
     
-    combined_similarities = 0.1 * cosine_sim_interest_norm + 0.4 * location_similarities_norm+ 0.5 * review_norm
+    combined_similarities = 0.1 * cosine_sim_interest_norm + 0.1 * location_similarities_norm+ 0.8 * review_norm
     
     # Get the indices of the top N recommendations
     top_n_indices = np.argsort(-combined_similarities[0])    

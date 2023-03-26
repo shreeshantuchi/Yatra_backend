@@ -16,5 +16,6 @@ urlpatterns = [
     path('<int:pk>/image/create/', ActivityImageCreateView.as_view(), name='activity-image-create'),
     path('<int:activity_id>/favorite/user=<int:user_id>/', ActivityFavoritesView.as_view(), name='activity-favorites'),
     path('list/<int:user_id>/',ActivityFavoriteListView.as_view(),name="activity_list"),
+    path('recommend/<int:user_id>/',ActivityFavoriteListView.as_view(),name="activity_recomended"),
 ]
 

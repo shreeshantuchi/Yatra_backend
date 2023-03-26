@@ -227,7 +227,7 @@ def get_popular_recommendations(user_location, user_interest,data_food):
     # Combine the two similarity scores using a weighted sum
     # You can adjust the weights to give more importance to one score over the other
     
-    combined_similarities = 0.5 * review_norm + 0.4 * location_similarities_norm+ 0.1 * cosine_sim_interest_norm
+    combined_similarities = 0.8 * review_norm + 0.1 * location_similarities_norm+ 0.1 * cosine_sim_interest_norm
     
     
     # Get the indices of the top N recommendations

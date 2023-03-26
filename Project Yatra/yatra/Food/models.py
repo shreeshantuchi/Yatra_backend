@@ -60,6 +60,8 @@ class Food(models.Model):
 class FoodImage(models.Model):
     def nameFile(instance,filename):
         full_name = f"{instance.food.name or ''}"
+        full_name=full_name.replace(':', '')
+        print(full_name)
         return f"Destination/{full_name}/{filename}"
      
     food = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='images')

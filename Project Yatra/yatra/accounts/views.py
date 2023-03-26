@@ -53,7 +53,8 @@ from accounts.serializers import (
     PoliceStationSerializer,
     SOSRequestCreateSerializer,
     SOSRequestListSerializer,
-    YatriSOSSerializer
+    YatriSOSSerializer,
+    SOSRequestViewSerializer
 )
 
 class UserRegistrationView(APIView):
@@ -447,6 +448,7 @@ class PoliceStationList(generics.ListAPIView):
     queryset=PoliceStation.objects.all()
     serializer_class=PoliceStationSerializer
 
+
 class SOSRequestCreateView(generics.CreateAPIView):
     serializer_class=SOSRequestCreateSerializer
 
@@ -498,6 +500,7 @@ class SOSRequestCreateView(generics.CreateAPIView):
         # Sort police stations by distance
         distances.sort(key=lambda x: x[0])
 
+    
         # Create SOS request object and return response
         request.data['yatri']=yatri.pk
         request.data['police_station'] = distances[0][1].pk
@@ -534,6 +537,14 @@ class SOSRequestStatusListView(generics.ListAPIView):
         else:
             return sosrequest
         
+class SOSRequestView(APIView):
+    def get(self, request, yatri_id, format=None):
+        yatri = get_object_or_404(Yatri, pk=yatri_id)
+        sos_requests = SOSRequest.objects.filter(yatri=yatri.pk)
+        valid_request=sos_requests.filter(is_active=True)
+        serializer = SOSRequestViewSerializer(valid_request, many=True)
+        return Response(serializer.data)
+
 
 class YatriLocationView(APIView):
     def get(self, request, yatri_id, format=None):
@@ -544,3 +555,25 @@ class YatriLocationView(APIView):
             return Response(data)
         
         return Response({'error': 'Location not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+# class GuideAddDestinationView(generics.UpdateAPIView):
+#     renderer_classes =[UserRenderer]
+#     serializer_class=SahayatriGuideSerializer
+#     def get_object(self):
+#         yatri_id = self.kwargs.get('expert_id')
+#         return get_object_or_404(SahayatriExpert, pk=yatri_id)
+    
+#     def update(self, request, *args, **kwargs):
+#         sahayatri = self.get_object()
+#         interest_ids = request.data.get('Destination.Destination', [])
+
+#         interests = Interest.objects.filter(id__in=interest_ids)
+       
+#         sahayatri.interests.set(interests)
+
+#         serializer = self.get_serializer(sahayatri, data=request.data, partial=True)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_update(serializer)
+
+#         return Response(serializer.data)

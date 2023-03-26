@@ -182,6 +182,14 @@ class SOSRequestListSerializer(serializers.ModelSerializer):
         fields=['yatri','police_station','timestamp','is_active','status']
 
 
+class SOSRequestViewSerializer(serializers.ModelSerializer):
+    yatri = YatriSOSSerializer()
+    police_station=PoliceStationSerializer()
+    class Meta:
+        model=SOSRequest
+        fields=['yatri','police_station','timestamp','is_active','status']
+
+
 class SOSRequestCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model=SOSRequest

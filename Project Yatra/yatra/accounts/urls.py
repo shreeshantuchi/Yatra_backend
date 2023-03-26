@@ -34,7 +34,8 @@ from accounts.views import (
     SOSRequestActiveListView,
     SOSRequestStatusListView,
     PoliceStationList,
-    YatriLocationView
+    YatriLocationView,
+    SOSRequestView
 )
 
 
@@ -96,6 +97,6 @@ urlpatterns = [
     path('sos/',SOSRequestListView.as_view(),name='sos-requests'),
     path('sos/active/',SOSRequestActiveListView.as_view(),name='sos-requests'),
     path('sos/<str:status>/<str:view>/',SOSRequestStatusListView.as_view(),name='sos-requests'),
-    path('policestation/',PoliceStationList.as_view(),name='policestations')
-
+    path('policestation/',PoliceStationList.as_view(),name='policestations'),
+    path("user/mysos/<int:yatri_id>/",SOSRequestView.as_view(),name='mysos')
 ]
